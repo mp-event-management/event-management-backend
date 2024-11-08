@@ -35,3 +35,7 @@ build/
 ### .env file ###
 .env
 !.env.example
+
+###for mac##
+.DS_Store
+*.pem
