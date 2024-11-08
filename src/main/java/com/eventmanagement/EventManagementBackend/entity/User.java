@@ -4,15 +4,16 @@ import com.eventmanagement.EventManagementBackend.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -51,16 +52,25 @@ public class User {
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
-    private OffsetDateTime createdAt;
-
+    private ZonedDateTime createdAt;
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updated_at")
-    private OffsetDateTime updatedAt;
+    private ZonedDateTime updatedAt;
     @Column(name = "deleted_at")
-    private OffsetDateTime deletedAt;
+    private ZonedDateTime deletedAt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", columnDefinition = "role not null", nullable = false)
     private Role role;
 
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = ZonedDateTime.now();
+        this.updatedAt = ZonedDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = ZonedDateTime.now();
+    }
 }
