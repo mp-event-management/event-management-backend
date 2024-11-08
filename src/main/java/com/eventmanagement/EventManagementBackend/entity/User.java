@@ -1,6 +1,6 @@
 package com.eventmanagement.EventManagementBackend.entity;
-
 import com.eventmanagement.EventManagementBackend.enums.Role;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -37,10 +37,6 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role", columnDefinition = "role not null", nullable = false)
-    private Role role;
-
     @Size(max = 100)
     @Column(name = "referral_code", length = 100)
     private String referralCode;
@@ -60,8 +56,11 @@ public class User {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updated_at")
     private OffsetDateTime updatedAt;
-
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", columnDefinition = "role not null", nullable = false)
+    private Role role;
 
 }
