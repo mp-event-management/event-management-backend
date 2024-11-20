@@ -8,10 +8,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 @SpringBootApplication
 @EnableConfigurationProperties({JwtConfigProperties.class, RsaKeyConfigProperties.class})
-public class EventManagementBackendApplication {
+public class Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(EventManagementBackendApplication.class, args);
+		SpringApplication.run(Application.class, args);
 	}
 
 }
