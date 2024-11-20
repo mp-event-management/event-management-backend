@@ -20,7 +20,7 @@ public class UserEventHistory {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_event_history_id_gen")
     @SequenceGenerator(name = "user_event_history_id_gen", sequenceName = "user_event_history_user_event_history_id_seq", allocationSize = 1)
     @Column(name = "user_event_history_id", nullable = false)
-    private Integer id;
+    private Integer userEventHistoryId;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

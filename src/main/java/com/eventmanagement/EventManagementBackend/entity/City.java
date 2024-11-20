@@ -1,5 +1,6 @@
 package com.eventmanagement.EventManagementBackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -20,7 +21,7 @@ public class City {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cities_id_gen")
     @SequenceGenerator(name = "cities_id_gen", sequenceName = "cities_city_id_seq", allocationSize = 1)
     @Column(name = "city_id", nullable = false)
-    private Integer id;
+    private Integer cityId;
 
     @Size(max = 150)
     @NotNull
@@ -42,6 +43,7 @@ public class City {
     private Set<Event> events = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "city")
+    @JsonIgnore // Prevent recursion when serializing users
     private Set<UsersAccount> usersAccounts = new LinkedHashSet<>();
 
 }

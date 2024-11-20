@@ -1,11 +1,10 @@
 package com.eventmanagement.EventManagementBackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -23,12 +22,13 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "events_id_gen")
     @SequenceGenerator(name = "events_id_gen", sequenceName = "events_event_id_seq", allocationSize = 1)
     @Column(name = "event_id", nullable = false)
-    private Integer id;
+    private Integer eventId;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_organizer_id", nullable = false)
+    @JsonIgnore // Avoid recursion
     private UsersAccount userOrganizer;
 
     @Size(max = 255)
@@ -93,6 +93,19 @@ public class Event {
 
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.createdAt == null) {
+            this.createdAt = OffsetDateTime.now();
+        }
+        this.updatedAt = OffsetDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = OffsetDateTime.now();
+    }
 
     @OneToMany(mappedBy = "event")
     private Set<EventPaymentMethod> eventPaymentMethods = new LinkedHashSet<>();

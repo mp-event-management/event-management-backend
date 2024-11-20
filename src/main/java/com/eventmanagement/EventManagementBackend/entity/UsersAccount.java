@@ -1,5 +1,7 @@
 package com.eventmanagement.EventManagementBackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -23,12 +25,13 @@ public class UsersAccount {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_accounts_id_gen")
     @SequenceGenerator(name = "users_accounts_id_gen", sequenceName = "users_accounts_user_id_seq", allocationSize = 1)
     @Column(name = "user_id", nullable = false)
-    private Integer id;
+    private Integer userId;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "role_id", nullable = false)
+    @JsonBackReference  // Marks this as the back reference
     private Role role;
 
     @Size(max = 150)
@@ -84,10 +87,24 @@ public class UsersAccount {
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
 
+    @PrePersist
+    public void prePersist() {
+        if (this.createdAt == null) {
+            this.createdAt = OffsetDateTime.now();
+        }
+        this.updatedAt = OffsetDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = OffsetDateTime.now();
+    }
+
     @OneToMany(mappedBy = "user")
     private Set<EventReview> eventReviews = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "userOrganizer")
+    @JsonIgnore // Prevent recursion when serializing events
     private Set<Event> events = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "userOrganizer")

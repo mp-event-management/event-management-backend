@@ -20,7 +20,7 @@ public class ReferralCode {
     @Id
     @SequenceGenerator(name = "referral_codes_id_gen", sequenceName = "promotions_promotion_id_seq", allocationSize = 1)
     @Column(name = "referral_code", nullable = false, length = Integer.MAX_VALUE)
-    private String referralCode;
+    private String referralCodeId;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

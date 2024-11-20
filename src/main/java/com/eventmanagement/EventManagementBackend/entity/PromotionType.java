@@ -18,7 +18,7 @@ public class PromotionType {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "promotion_types_id_gen")
     @SequenceGenerator(name = "promotion_types_id_gen", sequenceName = "promotion_types_promotion_type_id_seq", allocationSize = 1)
     @Column(name = "promotion_type_id", nullable = false)
-    private Integer id;
+    private Integer promotionTypeId;
 
     @Size(max = 150)
     @NotNull

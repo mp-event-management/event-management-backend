@@ -20,7 +20,7 @@ public class PaymentMethod {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payment_methods_id_gen")
     @SequenceGenerator(name = "payment_methods_id_gen", sequenceName = "payment_methods_payment_method_id_seq", allocationSize = 1)
     @Column(name = "payment_method_id", nullable = false)
-    private Integer id;
+    private Long paymentMethodId;
 
     @Size(max = 150)
     @NotNull
@@ -37,6 +37,19 @@ public class PaymentMethod {
 
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.createdAt == null) {
+            this.createdAt = OffsetDateTime.now();
+        }
+        this.updatedAt = OffsetDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = OffsetDateTime.now();
+    }
 
     @OneToMany(mappedBy = "paymentMethod")
     private Set<EventPaymentMethod> eventPaymentMethods = new LinkedHashSet<>();
