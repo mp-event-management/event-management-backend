@@ -14,11 +14,12 @@ import java.time.OffsetDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateEventRequestDTO {
+public class GetEventsRequestDTO {
+    private Integer eventId;
     private Integer userOrganizerId;
     private String title;
     private String description;
-    private Integer categoryId;
+    private CategoryDTO category;
     private String eventImagesUrl;
     private OffsetDateTime startDate;
     private OffsetDateTime endDate;
@@ -26,24 +27,7 @@ public class CreateEventRequestDTO {
     private int totalTicket;
     private int availableTicket;
     private String eventStatus;
-    private Integer cityId;
+    private CityDTO cityId;
     private String address;
 
-//    public Event toEntity() {
-//        Event event = new Event();
-//        event.setUserOrganizer(userOrganizerId);
-//        event.setTitle(title);
-//        event.setDescription(description);
-//        event.setCategory(categoryId);
-//        event.setEventImagesUrl(eventImagesUrl);
-//        event.setStartDate(startDate);
-//        event.setEndDate(endDate);
-//        event.setTicketPrice(ticketPrice);
-//        event.setTotalTicket(totalTicket);
-//        event.setAvailableTicket(availableTicket);
-//        event.setEventStatus(eventStatus);
-//        event.setCity(cityId);
-//        event.setAddress(address);
-//        return event;
-//    }
 }

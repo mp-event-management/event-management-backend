@@ -1,6 +1,5 @@
 package com.eventmanagement.EventManagementBackend.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -9,8 +8,6 @@ import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.OffsetDateTime;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -39,11 +36,10 @@ public class City {
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
 
-    @OneToMany(mappedBy = "city")
-    private Set<Event> events = new LinkedHashSet<>();
+//    @OneToMany(mappedBy = "city")
+//    private Set<Event> events = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "city")
-    @JsonIgnore // Prevent recursion when serializing users
-    private Set<UsersAccount> usersAccounts = new LinkedHashSet<>();
+//    @OneToMany(mappedBy = "city")
+//    private Set<UsersAccount> usersAccounts = new LinkedHashSet<>();
 
 }
