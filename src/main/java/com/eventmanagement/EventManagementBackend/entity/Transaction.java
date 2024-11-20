@@ -23,7 +23,7 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transactions_id_gen")
     @SequenceGenerator(name = "transactions_id_gen", sequenceName = "transactions_transaction_id_seq", allocationSize = 1)
     @Column(name = "transaction_id", nullable = false)
-    private Integer id;
+    private Integer transactionId;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

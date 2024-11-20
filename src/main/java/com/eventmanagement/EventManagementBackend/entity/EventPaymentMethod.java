@@ -1,6 +1,7 @@
 package com.eventmanagement.EventManagementBackend.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -14,17 +15,19 @@ import java.time.OffsetDateTime;
 @Entity
 @Table(name = "event_payment_methods")
 public class EventPaymentMethod {
-    @SequenceGenerator(name = "event_payment_methods_id_gen", sequenceName = "cities_city_id_seq", allocationSize = 1)
-    @EmbeddedId
-    private EventPaymentMethodId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "event_payment_methods_id_gen")
+    @SequenceGenerator(name = "event_payment_methods_id_gen", sequenceName = "event_payment_methods_event_payment_method_id_seq", allocationSize = 1)
+    @Column(name = "event_payment_method_id", nullable = false)
+    private Integer eventPaymentMethodId;
 
-    @MapsId("eventId")
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
-    @MapsId("paymentMethodId")
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "payment_method_id", nullable = false)
@@ -40,5 +43,18 @@ public class EventPaymentMethod {
 
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.createdAt == null) {
+            this.createdAt = OffsetDateTime.now();
+        }
+        this.updatedAt = OffsetDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = OffsetDateTime.now();
+    }
 
 }

@@ -22,7 +22,7 @@ public class Promotion {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "promotions_id_gen")
     @SequenceGenerator(name = "promotions_id_gen", sequenceName = "promotions_promotion_id_seq", allocationSize = 1)
     @Column(name = "promotion_id", nullable = false)
-    private Integer id;
+    private Integer promotionId;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -73,6 +73,19 @@ public class Promotion {
 
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.createdAt == null) {
+            this.createdAt = OffsetDateTime.now();
+        }
+        this.updatedAt = OffsetDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = OffsetDateTime.now();
+    }
 
     @OneToMany(mappedBy = "promotion")
     private Set<Transaction> transactions = new LinkedHashSet<>();

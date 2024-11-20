@@ -20,7 +20,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "categories_id_gen")
     @SequenceGenerator(name = "categories_id_gen", sequenceName = "categories_category_id_seq", allocationSize = 1)
     @Column(name = "category_id", nullable = false)
-    private Integer id;
+    private Integer categoryId;
 
     @Size(max = 150)
     @NotNull

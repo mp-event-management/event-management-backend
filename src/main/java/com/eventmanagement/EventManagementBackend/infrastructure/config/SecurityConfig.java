@@ -1,11 +1,10 @@
 package com.eventmanagement.EventManagementBackend.infrastructure.config;
 
-import com.eventmanagement.EventManagementBackend.usecase.events.GetEventsUsecase;
+import com.eventmanagement.EventManagementBackend.usecase.events.EventsPublicUsecase;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
@@ -18,22 +17,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.SecurityFilterChain;
 
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-
 
 @Configuration
 @EnableMethodSecurity
 @EnableWebSecurity
 public class SecurityConfig {
-    private final GetEventsUsecase getEventsUsecase;
+    private final EventsPublicUsecase getEventsUsecase;
     private final JwtConfigProperties jwtConfigProperties;
     private final RsaKeyConfigProperties rsaKeyConfigProperties;
     private final PasswordEncoder passwordEncoder;
 
     public SecurityConfig
     (
-        GetEventsUsecase getEventsUsecase,
+        EventsPublicUsecase getEventsUsecase,
         JwtConfigProperties jwtConfigProperties,
         RsaKeyConfigProperties rsaKeyConfigProperties,
         PasswordEncoder passwordEncoder

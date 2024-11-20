@@ -19,7 +19,7 @@ public class ReferralUsage {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "referral_usage_id_gen")
     @SequenceGenerator(name = "referral_usage_id_gen", sequenceName = "referral_usage_referral_usage_id_seq", allocationSize = 1)
     @Column(name = "referral_usage_id", nullable = false)
-    private Integer id;
+    private Integer referralUsageId;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
