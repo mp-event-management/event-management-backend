@@ -3,6 +3,7 @@ package com.eventmanagement.EventManagementBackend.infrastructure.events.control
 import com.eventmanagement.EventManagementBackend.common.response.ApiResponse;
 import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.CreateEventRequestDTO;
 import com.eventmanagement.EventManagementBackend.usecase.events.EventsPublicUsecase;
+import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,12 +23,19 @@ public class EventsPublicController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getEventById(@PathVariable Long id) {
+    public ResponseEntity<?> getEventById(@PathVariable Integer id) {
         return ApiResponse.successfulResponse("Get event details success", eventsPublicUsecase.getEventById(id));
     }
 
     @PostMapping
     public ResponseEntity<?> createEvent(@RequestBody CreateEventRequestDTO createEventRequestDTO) {
         return ApiResponse.successfulResponse("Create an event success", eventsPublicUsecase.createEvent(createEventRequestDTO));
+    }
+
+    @Transactional
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteEvent(@PathVariable Integer id) {
+        eventsPublicUsecase.deleteEvent(id);
+        return ApiResponse.successfulResponse("Delete event success", null);
     }
 }

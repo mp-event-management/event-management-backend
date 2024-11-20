@@ -42,7 +42,7 @@ public class Category {
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
 
-    @OneToMany(mappedBy = "category")
-    private Set<Event> events = new LinkedHashSet<>();
+//    @OneToMany(mappedBy = "category")
+//    private Set<Event> events = new LinkedHashSet<>();
 
 }
