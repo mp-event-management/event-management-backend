@@ -1,5 +1,6 @@
 package com.eventmanagement.EventManagementBackend.usecase.events.impl;
 
+import com.eventmanagement.EventManagementBackend.common.exceptions.DataNotFoundException;
 import com.eventmanagement.EventManagementBackend.entity.Event;
 import com.eventmanagement.EventManagementBackend.infrastructure.events.repository.EventsRepository;
 import com.eventmanagement.EventManagementBackend.usecase.events.GetEventsUsecase;
@@ -22,6 +23,7 @@ public class GetEventsUsecaseImpl implements GetEventsUsecase {
 
     @Override
     public Event getEventById(Long id) {
-        return null;
+        var foundEvent = eventsRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Event not found"));
+        return foundEvent;
     }
 }

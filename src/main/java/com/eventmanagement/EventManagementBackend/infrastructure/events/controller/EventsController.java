@@ -3,10 +3,7 @@ package com.eventmanagement.EventManagementBackend.infrastructure.events.control
 import com.eventmanagement.EventManagementBackend.common.response.ApiResponse;
 import com.eventmanagement.EventManagementBackend.usecase.events.GetEventsUsecase;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/events")
@@ -24,7 +21,7 @@ public class EventsController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getEventById(@RequestParam Long id) {
-        return null;
+    public ResponseEntity<?> getEventById(@PathVariable Long id) {
+        return ApiResponse.successfulResponse("Get event details success", getEventsUsecase.getEventById(id));
     }
 }
