@@ -9,7 +9,7 @@ import java.util.List;
 public interface EventsPublicUsecase {
     List<GetEventsRequestDTO> getAllEvents();
     GetEventsRequestDTO getEventById(Integer eventId);
-    Event createEvent(CreateEventRequestDTO createEventRequestDTO);
+    CreateEventRequestDTO createEvent(CreateEventRequestDTO createEventRequestDTO);
     Event updateEvent(Event event);
     void deleteEvent(Integer id);
 }
