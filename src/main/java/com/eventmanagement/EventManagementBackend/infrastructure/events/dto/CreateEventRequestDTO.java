@@ -1,5 +1,9 @@
 package com.eventmanagement.EventManagementBackend.infrastructure.events.dto;
 
+import com.eventmanagement.EventManagementBackend.entity.Category;
+import com.eventmanagement.EventManagementBackend.entity.City;
+import com.eventmanagement.EventManagementBackend.entity.Event;
+import com.eventmanagement.EventManagementBackend.entity.UsersAccount;
 import com.eventmanagement.EventManagementBackend.infrastructure.categories.dto.CategoryDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.cities.dto.CityDTO;
 import lombok.AllArgsConstructor;
@@ -29,21 +33,21 @@ public class CreateEventRequestDTO {
     private Integer cityId;
     private String address;
 
-//    public Event toEntity() {
-//        Event event = new Event();
-//        event.setUserOrganizer(userOrganizerId);
-//        event.setTitle(title);
-//        event.setDescription(description);
-//        event.setCategory(categoryId);
-//        event.setEventImagesUrl(eventImagesUrl);
-//        event.setStartDate(startDate);
-//        event.setEndDate(endDate);
-//        event.setTicketPrice(ticketPrice);
-//        event.setTotalTicket(totalTicket);
-//        event.setAvailableTicket(availableTicket);
-//        event.setEventStatus(eventStatus);
-//        event.setCity(cityId);
-//        event.setAddress(address);
-//        return event;
-//    }
+    public Event toEntity(UsersAccount usersAccount, Category category, City city) {
+        Event event = new Event();
+        event.setUserOrganizer(usersAccount);
+        event.setTitle(title);
+        event.setDescription(description);
+        event.setCategory(category);
+        event.setEventImagesUrl(eventImagesUrl);
+        event.setStartDate(startDate);
+        event.setEndDate(endDate);
+        event.setTicketPrice(ticketPrice);
+        event.setTotalTicket(totalTicket);
+        event.setAvailableTicket(availableTicket);
+        event.setEventStatus(eventStatus);
+        event.setCity(city);
+        event.setAddress(address);
+        return event;
+    }
 }

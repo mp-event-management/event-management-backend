@@ -91,7 +91,7 @@ public class EventsPublicUsecaseImpl implements EventsPublicUsecase {
     }
 
     @Override
-    public Event createEvent(CreateEventRequestDTO createEventRequestDTO) {
+    public CreateEventRequestDTO createEvent(CreateEventRequestDTO createEventRequestDTO) {
         // Fetch the related entities using the IDs
         UsersAccount userOrganizer = usersRepository.findById(createEventRequestDTO.getUserOrganizerId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid User Organizer ID"));
@@ -101,22 +101,41 @@ public class EventsPublicUsecaseImpl implements EventsPublicUsecase {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid City ID"));
 
         // Create the Event entity
-        Event event = new Event();
-        event.setUserOrganizer(userOrganizer);
-        event.setTitle(createEventRequestDTO.getTitle());
-        event.setDescription(createEventRequestDTO.getDescription());
-        event.setCategory(category);
-        event.setEventImagesUrl(createEventRequestDTO.getEventImagesUrl());
-        event.setStartDate(createEventRequestDTO.getStartDate());
-        event.setEndDate(createEventRequestDTO.getEndDate());
-        event.setTicketPrice(createEventRequestDTO.getTicketPrice());
-        event.setTotalTicket(createEventRequestDTO.getTotalTicket());
-        event.setAvailableTicket(createEventRequestDTO.getAvailableTicket());
-        event.setEventStatus(createEventRequestDTO.getEventStatus());
-        event.setCity(city);
-        event.setAddress(createEventRequestDTO.getAddress());
+//        Event event = new Event();
+//        event.setUserOrganizer(userOrganizer);
+//        event.setTitle(createEventRequestDTO.getTitle());
+//        event.setDescription(createEventRequestDTO.getDescription());
+//        event.setCategory(category);
+//        event.setEventImagesUrl(createEventRequestDTO.getEventImagesUrl());
+//        event.setStartDate(createEventRequestDTO.getStartDate());
+//        event.setEndDate(createEventRequestDTO.getEndDate());
+//        event.setTicketPrice(createEventRequestDTO.getTicketPrice());
+//        event.setTotalTicket(createEventRequestDTO.getTotalTicket());
+//        event.setAvailableTicket(createEventRequestDTO.getAvailableTicket());
+//        event.setEventStatus(createEventRequestDTO.getEventStatus());
+//        event.setCity(city);
+//        event.setAddress(createEventRequestDTO.getAddress());
 
-        return eventsRepository.save(event);
+        Event event = createEventRequestDTO.toEntity(userOrganizer, category, city);
+
+        Event savedEvent = eventsRepository.save(event);
+
+        // Return the response DTO
+        return CreateEventRequestDTO.builder()
+                .userOrganizerId(savedEvent.getUserOrganizer().getUserId())
+                .title(savedEvent.getTitle())
+                .description(savedEvent.getDescription())
+                .categoryId(savedEvent.getCategory().getCategoryId())
+                .eventImagesUrl(savedEvent.getEventImagesUrl())
+                .startDate(savedEvent.getStartDate())
+                .endDate(savedEvent.getEndDate())
+                .ticketPrice(savedEvent.getTicketPrice())
+                .totalTicket(savedEvent.getTotalTicket())
+                .availableTicket(savedEvent.getAvailableTicket())
+                .eventStatus(savedEvent.getEventStatus())
+                .cityId(savedEvent.getCity().getCityId())
+                .address(savedEvent.getAddress())
+                .build();
     }
 
     @Override

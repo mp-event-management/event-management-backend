@@ -29,7 +29,8 @@ public class EventsPublicController {
 
     @PostMapping
     public ResponseEntity<?> createEvent(@RequestBody CreateEventRequestDTO createEventRequestDTO) {
-        return ApiResponse.successfulResponse("Create an event success", eventsPublicUsecase.createEvent(createEventRequestDTO));
+        CreateEventRequestDTO createdEvent = eventsPublicUsecase.createEvent(createEventRequestDTO);
+        return ApiResponse.successfulResponse("Create an event success", createdEvent);
     }
 
     @Transactional
