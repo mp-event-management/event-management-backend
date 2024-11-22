@@ -2,6 +2,7 @@ package com.eventmanagement.EventManagementBackend.infrastructure.events.control
 
 import com.eventmanagement.EventManagementBackend.common.response.ApiResponse;
 import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.CreateEventRequestDTO;
+import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.UpdateEventRequestDTO;
 import com.eventmanagement.EventManagementBackend.usecase.events.EventsPublicUsecase;
 import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,11 @@ public class EventsPublicController {
     public ResponseEntity<?> createEvent(@RequestBody CreateEventRequestDTO createEventRequestDTO) {
         CreateEventRequestDTO createdEvent = eventsPublicUsecase.createEvent(createEventRequestDTO);
         return ApiResponse.successfulResponse("Create an event success", createdEvent);
+    }
+
+    @PutMapping
+    public ResponseEntity<?> updateEvent(@RequestBody UpdateEventRequestDTO updateEventRequestDTO) {
+        return null;
     }
 
     @Transactional

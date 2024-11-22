@@ -1,6 +1,5 @@
 package com.eventmanagement.EventManagementBackend.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -28,7 +27,6 @@ public class Event {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_organizer_id", nullable = false)
-    @JsonIgnore // Avoid recursion
     private UsersAccount userOrganizer;
 
     @Size(max = 255)
@@ -95,7 +93,7 @@ public class Event {
     private OffsetDateTime deletedAt;
 
     @PrePersist
-    public void prePersist() {
+    public void onCreate() {
         if (this.createdAt == null) {
             this.createdAt = OffsetDateTime.now();
         }
@@ -103,8 +101,13 @@ public class Event {
     }
 
     @PreUpdate
-    public void preUpdate() {
+    public void onUpdate() {
         this.updatedAt = OffsetDateTime.now();
+    }
+
+    @PreRemove
+    protected void onRemove() {
+        deletedAt = OffsetDateTime.now();
     }
 
     @OneToMany(mappedBy = "event")
