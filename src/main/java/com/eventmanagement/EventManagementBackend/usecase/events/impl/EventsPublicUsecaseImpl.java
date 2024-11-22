@@ -10,7 +10,8 @@ import com.eventmanagement.EventManagementBackend.infrastructure.categories.repo
 import com.eventmanagement.EventManagementBackend.infrastructure.cities.dto.CityDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.cities.repository.CityRepository;
 import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.CreateEventRequestDTO;
-import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.GetEventsRequestDTO;
+import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.GetEventsResponseDTO;
+import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.UpdateEventRequestDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.events.repository.EventsRepository;
 import com.eventmanagement.EventManagementBackend.infrastructure.users.repository.UsersRepository;
 import com.eventmanagement.EventManagementBackend.usecase.events.EventsPublicUsecase;
@@ -34,8 +35,8 @@ public class EventsPublicUsecaseImpl implements EventsPublicUsecase {
     }
 
     @Override
-    public List<GetEventsRequestDTO> getAllEvents() {
-        return eventsRepository.findAllEvents().stream().map(event -> GetEventsRequestDTO.builder()
+    public List<GetEventsResponseDTO> getAllEvents() {
+        return eventsRepository.findAllEvents().stream().map(event -> GetEventsResponseDTO.builder()
                 .eventId(event.getEventId())
                 .userOrganizerId(event.getUserOrganizer().getUserId())
                 .title(event.getTitle())
@@ -52,20 +53,19 @@ public class EventsPublicUsecaseImpl implements EventsPublicUsecase {
                 .totalTicket(event.getTotalTicket())
                 .availableTicket(event.getAvailableTicket())
                 .eventStatus(event.getEventStatus())
-                .cityId(CityDTO.builder()
+                .city(CityDTO.builder()
                         .cityId(event.getCity().getCityId())
                         .cityName(event.getCity().getName())
                         .build())
                 .address(event.getAddress())
                 .build()).collect(Collectors.toList());
-
     }
 
     @Override
-    public GetEventsRequestDTO getEventById(Integer eventId) {
+    public GetEventsResponseDTO getEventById(Integer eventId) {
         Event event = eventsRepository.findById(eventId).orElseThrow(() -> new DataNotFoundException("Event not found"));
 
-        return GetEventsRequestDTO.builder()
+        return GetEventsResponseDTO.builder()
                 .eventId(event.getEventId())
                 .userOrganizerId(event.getUserOrganizer().getUserId())
                 .title(event.getTitle())
@@ -82,7 +82,7 @@ public class EventsPublicUsecaseImpl implements EventsPublicUsecase {
                 .totalTicket(event.getTotalTicket())
                 .availableTicket(event.getAvailableTicket())
                 .eventStatus(event.getEventStatus())
-                .cityId(CityDTO.builder()
+                .city(CityDTO.builder()
                         .cityId(event.getCity().getCityId())
                         .cityName(event.getCity().getName())
                         .build())
@@ -100,25 +100,11 @@ public class EventsPublicUsecaseImpl implements EventsPublicUsecase {
         City city = cityRepository.findById(createEventRequestDTO.getCityId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid City ID"));
 
-        // Create the Event entity
-//        Event event = new Event();
-//        event.setUserOrganizer(userOrganizer);
-//        event.setTitle(createEventRequestDTO.getTitle());
-//        event.setDescription(createEventRequestDTO.getDescription());
-//        event.setCategory(category);
-//        event.setEventImagesUrl(createEventRequestDTO.getEventImagesUrl());
-//        event.setStartDate(createEventRequestDTO.getStartDate());
-//        event.setEndDate(createEventRequestDTO.getEndDate());
-//        event.setTicketPrice(createEventRequestDTO.getTicketPrice());
-//        event.setTotalTicket(createEventRequestDTO.getTotalTicket());
-//        event.setAvailableTicket(createEventRequestDTO.getAvailableTicket());
-//        event.setEventStatus(createEventRequestDTO.getEventStatus());
-//        event.setCity(city);
-//        event.setAddress(createEventRequestDTO.getAddress());
+        // Convert DTO to Entity
+        Event newEvent = createEventRequestDTO.toEntity(userOrganizer, category, city);
 
-        Event event = createEventRequestDTO.toEntity(userOrganizer, category, city);
-
-        Event savedEvent = eventsRepository.save(event);
+        // Save the Event entity
+        Event savedEvent = eventsRepository.save(newEvent);
 
         // Return the response DTO
         return CreateEventRequestDTO.builder()
@@ -139,7 +125,7 @@ public class EventsPublicUsecaseImpl implements EventsPublicUsecase {
     }
 
     @Override
-    public Event updateEvent(Event event) {
+    public UpdateEventRequestDTO updateEvent(Event event) {
         return null;
     }
 

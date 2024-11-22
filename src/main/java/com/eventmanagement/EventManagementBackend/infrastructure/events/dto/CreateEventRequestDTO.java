@@ -4,8 +4,6 @@ import com.eventmanagement.EventManagementBackend.entity.Category;
 import com.eventmanagement.EventManagementBackend.entity.City;
 import com.eventmanagement.EventManagementBackend.entity.Event;
 import com.eventmanagement.EventManagementBackend.entity.UsersAccount;
-import com.eventmanagement.EventManagementBackend.infrastructure.categories.dto.CategoryDTO;
-import com.eventmanagement.EventManagementBackend.infrastructure.cities.dto.CityDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
