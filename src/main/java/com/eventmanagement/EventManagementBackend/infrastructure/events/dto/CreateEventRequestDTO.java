@@ -25,8 +25,8 @@ public class CreateEventRequestDTO {
     private OffsetDateTime startDate;
     private OffsetDateTime endDate;
     private BigDecimal ticketPrice;
-    private int totalTicket;
-    private int availableTicket;
+    private Integer totalTicket;
+    private Integer availableTicket;
     private String eventStatus;
     private Integer cityId;
     private String address;

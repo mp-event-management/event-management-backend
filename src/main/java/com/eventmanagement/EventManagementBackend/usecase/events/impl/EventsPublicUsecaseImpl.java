@@ -125,8 +125,85 @@ public class EventsPublicUsecaseImpl implements EventsPublicUsecase {
     }
 
     @Override
-    public UpdateEventRequestDTO updateEvent(Event event) {
-        return null;
+    public UpdateEventRequestDTO updateEvent(UpdateEventRequestDTO updateEventRequestDTO) {
+        // Fetch the existing event ID
+        Event existingEvent = eventsRepository.findById(updateEventRequestDTO.getEventId())
+                .orElseThrow(() -> new DataNotFoundException("Event not found"));
+
+        // Fetch related entities if IDs are provided in the update DTO
+        if (updateEventRequestDTO.getCategoryId() != null) {
+            Category category = categoryRepository.findById(updateEventRequestDTO.getCategoryId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid Category ID"));
+            existingEvent.setCategory(category);
+        }
+
+        if (updateEventRequestDTO.getCityId() != null) {
+            City city = cityRepository.findById(updateEventRequestDTO.getCityId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid City ID"));
+            existingEvent.setCity(city);
+        }
+
+        // Update fields of the existing event
+        if (updateEventRequestDTO.getTitle() != null) {
+            existingEvent.setTitle(updateEventRequestDTO.getTitle());
+        }
+
+        if (updateEventRequestDTO.getDescription() != null) {
+            existingEvent.setDescription(updateEventRequestDTO.getDescription());
+        }
+
+        if (updateEventRequestDTO.getEventImagesUrl() != null) {
+            existingEvent.setEventImagesUrl(updateEventRequestDTO.getEventImagesUrl());
+        }
+
+        if (updateEventRequestDTO.getStartDate() != null) {
+            existingEvent.setStartDate(updateEventRequestDTO.getStartDate());
+        }
+
+        if (updateEventRequestDTO.getEndDate() != null) {
+            existingEvent.setEndDate(updateEventRequestDTO.getEndDate());
+        }
+
+        if (updateEventRequestDTO.getTicketPrice() != null) {
+            existingEvent.setTicketPrice(updateEventRequestDTO.getTicketPrice());
+        }
+
+        if (updateEventRequestDTO.getTotalTicket() != null) {
+            existingEvent.setTotalTicket(updateEventRequestDTO.getTotalTicket());
+        }
+
+        if (updateEventRequestDTO.getAvailableTicket() != null) {
+            existingEvent.setAvailableTicket(updateEventRequestDTO.getAvailableTicket());
+        }
+
+        if (updateEventRequestDTO.getEventStatus() != null) {
+            existingEvent.setEventStatus(updateEventRequestDTO.getEventStatus());
+        }
+
+        if (updateEventRequestDTO.getAddress() != null) {
+            existingEvent.setAddress(updateEventRequestDTO.getAddress());
+        }
+
+        // Save the updated event
+        Event updatedEvent = eventsRepository.save(existingEvent);
+
+        // Convert the updated entity back to the DTO and return the data
+        return UpdateEventRequestDTO.builder()
+                .eventId(updatedEvent.getEventId())
+                .title(updatedEvent.getTitle())
+                .description(updatedEvent.getDescription())
+                .categoryId(updatedEvent.getCategory().getCategoryId())
+                .cityId(updatedEvent.getCity().getCityId())
+                .eventImagesUrl(updatedEvent.getEventImagesUrl())
+                .startDate(updatedEvent.getStartDate())
+                .endDate(updatedEvent.getEndDate())
+                .ticketPrice(updatedEvent.getTicketPrice())
+                .totalTicket(updatedEvent.getTotalTicket())
+                .availableTicket(updatedEvent.getAvailableTicket())
+                .eventStatus(updatedEvent.getEventStatus())
+                .address(updatedEvent.getAddress())
+                .build()
+                ;
     }
 
     @Override
