@@ -14,7 +14,6 @@ import java.time.OffsetDateTime;
 @Builder
 public class UpdateEventRequestDTO {
     private Integer eventId;
-    private Integer userOrganizerId;
     private String title;
     private String description;
     private Integer categoryId;
