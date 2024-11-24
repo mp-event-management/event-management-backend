@@ -5,29 +5,29 @@ import com.eventmanagement.EventManagementBackend.entity.Category;
 import com.eventmanagement.EventManagementBackend.entity.City;
 import com.eventmanagement.EventManagementBackend.entity.Event;
 import com.eventmanagement.EventManagementBackend.entity.UsersAccount;
-import com.eventmanagement.EventManagementBackend.infrastructure.categories.dto.CategoryDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.categories.repository.CategoryRepository;
-import com.eventmanagement.EventManagementBackend.infrastructure.cities.dto.CityDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.cities.repository.CityRepository;
 import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.CreateEventRequestDTO;
-import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.GetEventsResponseDTO;
+import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.EventDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.UpdateEventRequestDTO;
+import com.eventmanagement.EventManagementBackend.infrastructure.events.mapper.EventMapper;
 import com.eventmanagement.EventManagementBackend.infrastructure.events.repository.EventsRepository;
-import com.eventmanagement.EventManagementBackend.infrastructure.users.repository.UsersRepository;
+import com.eventmanagement.EventManagementBackend.infrastructure.users.repository.UsersAccountRepository;
 import com.eventmanagement.EventManagementBackend.usecase.events.EventsPublicUsecase;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class EventsPublicUsecaseImpl implements EventsPublicUsecase {
     private final EventsRepository eventsRepository;
-    private final UsersRepository usersRepository;
+    private final UsersAccountRepository usersRepository;
     private final CategoryRepository categoryRepository;
     private final CityRepository cityRepository;
 
-    public EventsPublicUsecaseImpl(EventsRepository eventsRepository, UsersRepository usersRepository, CategoryRepository categoryRepository, CityRepository cityRepository) {
+    public EventsPublicUsecaseImpl(EventsRepository eventsRepository, UsersAccountRepository usersRepository, CategoryRepository categoryRepository, CityRepository cityRepository) {
         this.eventsRepository = eventsRepository;
         this.usersRepository = usersRepository;
         this.categoryRepository = categoryRepository;
@@ -35,59 +35,67 @@ public class EventsPublicUsecaseImpl implements EventsPublicUsecase {
     }
 
     @Override
-    public List<GetEventsResponseDTO> getAllEvents() {
-        return eventsRepository.findAllEvents().stream().map(event -> GetEventsResponseDTO.builder()
-                .eventId(event.getEventId())
-                .userOrganizerId(event.getUserOrganizer().getUserId())
-                .title(event.getTitle())
-                .description(event.getDescription())
-                .category(CategoryDTO.builder()
-                        .categoryId(event.getCategory().getCategoryId())
-                        .name(event.getCategory().getName())
-                        .iconUrl(event.getCategory().getIconUrl())
-                        .build())
-                .eventImagesUrl(event.getEventImagesUrl())
-                .startDate(event.getStartDate())
-                .endDate(event.getEndDate())
-                .ticketPrice(event.getTicketPrice())
-                .totalTicket(event.getTotalTicket())
-                .availableTicket(event.getAvailableTicket())
-                .eventStatus(event.getEventStatus())
-                .city(CityDTO.builder()
-                        .cityId(event.getCity().getCityId())
-                        .cityName(event.getCity().getName())
-                        .build())
-                .address(event.getAddress())
-                .build()).collect(Collectors.toList());
+    public List<EventDTO> getAllEvents() {
+        List<Event> events = eventsRepository.findAll();
+
+        if (events.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return events.stream().map(EventMapper::mapToEventDto).collect(Collectors.toList());
+//        return events.stream().map(event -> GetEventsResponseDTO.builder()
+//                .eventId(event.getEventId())
+//                .userOrganizerId(event.getUserOrganizer().getUserId())
+//                .title(event.getTitle())
+//                .description(event.getDescription())
+//                .category(CategoryDTO.builder()
+//                        .categoryId(event.getCategory().getCategoryId())
+//                        .name(event.getCategory().getName())
+//                        .iconUrl(event.getCategory().getIconUrl())
+//                        .build())
+//                .eventImagesUrl(event.getEventImagesUrl())
+//                .startDate(event.getStartDate())
+//                .endDate(event.getEndDate())
+//                .ticketPrice(event.getTicketPrice())
+//                .totalTicket(event.getTotalTicket())
+//                .availableTicket(event.getAvailableTicket())
+//                .eventStatus(event.getEventStatus())
+//                .city(CityDTO.builder()
+//                        .cityId(event.getCity().getCityId())
+//                        .cityName(event.getCity().getName())
+//                        .build())
+//                .address(event.getAddress())
+//                .build()).collect(Collectors.toList());
     }
 
     @Override
-    public GetEventsResponseDTO getEventById(Integer eventId) {
+    public EventDTO getEventById(Integer eventId) {
         Event event = eventsRepository.findById(eventId).orElseThrow(() -> new DataNotFoundException("Event not found"));
 
-        return GetEventsResponseDTO.builder()
-                .eventId(event.getEventId())
-                .userOrganizerId(event.getUserOrganizer().getUserId())
-                .title(event.getTitle())
-                .description(event.getDescription())
-                .category(CategoryDTO.builder()
-                        .categoryId(event.getCategory().getCategoryId())
-                        .name(event.getCategory().getName())
-                        .iconUrl(event.getCategory().getIconUrl())
-                        .build())
-                .eventImagesUrl(event.getEventImagesUrl())
-                .startDate(event.getStartDate())
-                .endDate(event.getEndDate())
-                .ticketPrice(event.getTicketPrice())
-                .totalTicket(event.getTotalTicket())
-                .availableTicket(event.getAvailableTicket())
-                .eventStatus(event.getEventStatus())
-                .city(CityDTO.builder()
-                        .cityId(event.getCity().getCityId())
-                        .cityName(event.getCity().getName())
-                        .build())
-                .address(event.getAddress())
-                .build();
+        return EventMapper.mapToEventDto(event);
+//        return GetEventsResponseDTO.builder()
+//                .eventId(event.getEventId())
+//                .userOrganizerId(event.getUserOrganizer().getUserId())
+//                .title(event.getTitle())
+//                .description(event.getDescription())
+//                .category(CategoryDTO.builder()
+//                        .categoryId(event.getCategory().getCategoryId())
+//                        .name(event.getCategory().getName())
+//                        .iconUrl(event.getCategory().getIconUrl())
+//                        .build())
+//                .eventImagesUrl(event.getEventImagesUrl())
+//                .startDate(event.getStartDate())
+//                .endDate(event.getEndDate())
+//                .ticketPrice(event.getTicketPrice())
+//                .totalTicket(event.getTotalTicket())
+//                .availableTicket(event.getAvailableTicket())
+//                .eventStatus(event.getEventStatus())
+//                .city(CityDTO.builder()
+//                        .cityId(event.getCity().getCityId())
+//                        .cityName(event.getCity().getName())
+//                        .build())
+//                .address(event.getAddress())
+//                .build();
     }
 
     @Override
@@ -107,27 +115,42 @@ public class EventsPublicUsecaseImpl implements EventsPublicUsecase {
         Event savedEvent = eventsRepository.save(newEvent);
 
         // Return the response DTO
-        return CreateEventRequestDTO.builder()
-                .userOrganizerId(savedEvent.getUserOrganizer().getUserId())
-                .title(savedEvent.getTitle())
-                .description(savedEvent.getDescription())
-                .categoryId(savedEvent.getCategory().getCategoryId())
-                .eventImagesUrl(savedEvent.getEventImagesUrl())
-                .startDate(savedEvent.getStartDate())
-                .endDate(savedEvent.getEndDate())
-                .ticketPrice(savedEvent.getTicketPrice())
-                .totalTicket(savedEvent.getTotalTicket())
-                .availableTicket(savedEvent.getAvailableTicket())
-                .eventStatus(savedEvent.getEventStatus())
-                .cityId(savedEvent.getCity().getCityId())
-                .address(savedEvent.getAddress())
-                .build();
+        return new CreateEventRequestDTO(
+                savedEvent.getUserOrganizer().getUserId(),
+                savedEvent.getTitle(),
+                savedEvent.getDescription(),
+                savedEvent.getCategory().getCategoryId(),
+                savedEvent.getEventImagesUrl(),
+                savedEvent.getStartDate(),
+                savedEvent.getEndDate(),
+                savedEvent.getTicketPrice(),
+                savedEvent.getTotalTicket(),
+                savedEvent.getAvailableTicket(),
+                savedEvent.getEventStatus(),
+                savedEvent.getCity().getCityId(),
+                savedEvent.getAddress()
+        );
+//        return CreateEventRequestDTO.builder()
+//                .userOrganizerId(savedEvent.getUserOrganizer().getUserId())
+//                .title(savedEvent.getTitle())
+//                .description(savedEvent.getDescription())
+//                .categoryId(savedEvent.getCategory().getCategoryId())
+//                .eventImagesUrl(savedEvent.getEventImagesUrl())
+//                .startDate(savedEvent.getStartDate())
+//                .endDate(savedEvent.getEndDate())
+//                .ticketPrice(savedEvent.getTicketPrice())
+//                .totalTicket(savedEvent.getTotalTicket())
+//                .availableTicket(savedEvent.getAvailableTicket())
+//                .eventStatus(savedEvent.getEventStatus())
+//                .cityId(savedEvent.getCity().getCityId())
+//                .address(savedEvent.getAddress())
+//                .build();
     }
 
     @Override
-    public UpdateEventRequestDTO updateEvent(UpdateEventRequestDTO updateEventRequestDTO) {
+    public UpdateEventRequestDTO updateEvent(Integer id, UpdateEventRequestDTO updateEventRequestDTO) {
         // Fetch the existing event ID
-        Event existingEvent = eventsRepository.findById(updateEventRequestDTO.getEventId())
+        Event existingEvent = eventsRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Event not found"));
 
         // Fetch related entities if IDs are provided in the update DTO
@@ -188,27 +211,42 @@ public class EventsPublicUsecaseImpl implements EventsPublicUsecase {
         Event updatedEvent = eventsRepository.save(existingEvent);
 
         // Convert the updated entity back to the DTO and return the data
-        return UpdateEventRequestDTO.builder()
-                .eventId(updatedEvent.getEventId())
-                .title(updatedEvent.getTitle())
-                .description(updatedEvent.getDescription())
-                .categoryId(updatedEvent.getCategory().getCategoryId())
-                .cityId(updatedEvent.getCity().getCityId())
-                .eventImagesUrl(updatedEvent.getEventImagesUrl())
-                .startDate(updatedEvent.getStartDate())
-                .endDate(updatedEvent.getEndDate())
-                .ticketPrice(updatedEvent.getTicketPrice())
-                .totalTicket(updatedEvent.getTotalTicket())
-                .availableTicket(updatedEvent.getAvailableTicket())
-                .eventStatus(updatedEvent.getEventStatus())
-                .address(updatedEvent.getAddress())
-                .build()
-                ;
+        return new UpdateEventRequestDTO(
+                updatedEvent.getEventId(),
+                updatedEvent.getTitle(),
+                updatedEvent.getDescription(),
+                updatedEvent.getCategory().getCategoryId(),
+                updatedEvent.getEventImagesUrl(),
+                updatedEvent.getStartDate(),
+                updatedEvent.getEndDate(),
+                updatedEvent.getTicketPrice(),
+                updatedEvent.getTotalTicket(),
+                updatedEvent.getAvailableTicket(),
+                updatedEvent.getEventStatus(),
+                updatedEvent.getCity().getCityId(),
+                updatedEvent.getAddress()
+        );
     }
+//        return UpdateEventRequestDTO.builder()
+//                .eventId(updatedEvent.getEventId())
+//                .title(updatedEvent.getTitle())
+//                .description(updatedEvent.getDescription())
+//                .categoryId(updatedEvent.getCategory().getCategoryId())
+//                .cityId(updatedEvent.getCity().getCityId())
+//                .eventImagesUrl(updatedEvent.getEventImagesUrl())
+//                .startDate(updatedEvent.getStartDate())
+//                .endDate(updatedEvent.getEndDate())
+//                .ticketPrice(updatedEvent.getTicketPrice())
+//                .totalTicket(updatedEvent.getTotalTicket())
+//                .availableTicket(updatedEvent.getAvailableTicket())
+//                .eventStatus(updatedEvent.getEventStatus())
+//                .address(updatedEvent.getAddress())
+//                .build();
+//    }
 
     @Override
     public void deleteEvent(Integer id) {
-        if (!eventsRepository.existsById(id)) throw new DataNotFoundException("Event not found");
+        eventsRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Event not found"));
         eventsRepository.deleteById(id);
     }
 }

@@ -3,8 +3,7 @@ package com.eventmanagement.EventManagementBackend.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -14,8 +13,7 @@ import java.time.OffsetDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "transactions")
 public class Transaction {
@@ -82,8 +80,25 @@ public class Transaction {
 
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
-
     @OneToMany(mappedBy = "transaction")
     private Set<Payment> payments = new LinkedHashSet<>();
+
+    @PrePersist
+    public void onCreate() {
+        if (this.createdAt == null) {
+            this.createdAt = OffsetDateTime.now();
+        }
+        this.updatedAt = OffsetDateTime.now();
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        this.updatedAt = OffsetDateTime.now();
+    }
+
+    @PreRemove
+    protected void onRemove() {
+        deletedAt = OffsetDateTime.now();
+    }
 
 }

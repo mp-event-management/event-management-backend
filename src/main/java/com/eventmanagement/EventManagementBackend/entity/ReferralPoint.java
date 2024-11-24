@@ -2,16 +2,14 @@ package com.eventmanagement.EventManagementBackend.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.OffsetDateTime;
 
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "referral_points")
 public class ReferralPoint {
@@ -47,5 +45,23 @@ public class ReferralPoint {
 
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
+
+    @PrePersist
+    public void onCreate() {
+        if (this.createdAt == null) {
+            this.createdAt = OffsetDateTime.now();
+        }
+        this.updatedAt = OffsetDateTime.now();
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        this.updatedAt = OffsetDateTime.now();
+    }
+
+    @PreRemove
+    protected void onRemove() {
+        deletedAt = OffsetDateTime.now();
+    }
 
 }

@@ -4,7 +4,6 @@ import com.eventmanagement.EventManagementBackend.common.response.ApiResponse;
 import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.CreateEventRequestDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.UpdateEventRequestDTO;
 import com.eventmanagement.EventManagementBackend.usecase.events.EventsPublicUsecase;
-import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -38,16 +37,15 @@ public class EventsPublicController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateEvent(@PathVariable Integer id, @Validated @RequestBody UpdateEventRequestDTO updateEventRequestDTO) {
         // Set eventId in the DTO if not provided in the request body
-        updateEventRequestDTO.setEventId(id);
+//        updateEventRequestDTO.setEventId(id);
 
         // Call the eventId in the DTO to update the event
-        UpdateEventRequestDTO updatedEvent = eventsPublicUsecase.updateEvent(updateEventRequestDTO);
+        UpdateEventRequestDTO updatedEvent = eventsPublicUsecase.updateEvent(id, updateEventRequestDTO);
 
         // Return the updated event as the response
         return ApiResponse.successfulResponse("Update event success", updatedEvent);
     }
 
-    @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteEvent(@PathVariable Integer id) {
         eventsPublicUsecase.deleteEvent(id);
