@@ -3,7 +3,9 @@ package com.eventmanagement.EventManagementBackend.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -15,6 +17,8 @@ import java.util.Set;
 
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "events")
 public class Event {
     @Id
@@ -91,6 +95,37 @@ public class Event {
 
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
+    @OneToMany(mappedBy = "event")
+    private Set<EventPaymentMethod> eventPaymentMethods = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "event")
+    private Set<EventReview> eventReviews = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "event")
+    private Set<Promotion> promotions = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "event")
+    private Set<Transaction> transactions = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "event")
+    private Set<UserEventHistory> userEventHistories = new LinkedHashSet<>();
+
+    public Event(Integer eventId, UsersAccount userOrganizer, String title, String description,
+                 Category category, String eventImagesUrl, OffsetDateTime startDate, OffsetDateTime endDate,
+                 BigDecimal ticketPrice, Integer totalTicket, Integer availableTicket, String eventStatus,
+                 City city, String address
+    ) {
+        this.eventId = eventId;
+        this.userOrganizer = userOrganizer;
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.eventImagesUrl = eventImagesUrl;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.ticketPrice = ticketPrice;
+        this.totalTicket = totalTicket;
+        this.availableTicket = availableTicket;
+        this.eventStatus = eventStatus;
+        this.city = city;
+        this.address = address;
+    }
 
     @PrePersist
     public void onCreate() {
@@ -109,20 +144,5 @@ public class Event {
     protected void onRemove() {
         deletedAt = OffsetDateTime.now();
     }
-
-    @OneToMany(mappedBy = "event")
-    private Set<EventPaymentMethod> eventPaymentMethods = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "event")
-    private Set<EventReview> eventReviews = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "event")
-    private Set<Promotion> promotions = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "event")
-    private Set<Transaction> transactions = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "event")
-    private Set<UserEventHistory> userEventHistories = new LinkedHashSet<>();
 
 }

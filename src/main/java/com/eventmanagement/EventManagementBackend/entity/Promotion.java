@@ -2,8 +2,7 @@ package com.eventmanagement.EventManagementBackend.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -13,8 +12,7 @@ import java.time.OffsetDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "promotions")
 public class Promotion {
@@ -73,9 +71,11 @@ public class Promotion {
 
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
+    @OneToMany(mappedBy = "promotion")
+    private Set<Transaction> transactions = new LinkedHashSet<>();
 
     @PrePersist
-    public void prePersist() {
+    public void onCreate() {
         if (this.createdAt == null) {
             this.createdAt = OffsetDateTime.now();
         }
@@ -83,11 +83,13 @@ public class Promotion {
     }
 
     @PreUpdate
-    public void preUpdate() {
+    public void onUpdate() {
         this.updatedAt = OffsetDateTime.now();
     }
 
-    @OneToMany(mappedBy = "promotion")
-    private Set<Transaction> transactions = new LinkedHashSet<>();
+    @PreRemove
+    protected void onRemove() {
+        deletedAt = OffsetDateTime.now();
+    }
 
 }

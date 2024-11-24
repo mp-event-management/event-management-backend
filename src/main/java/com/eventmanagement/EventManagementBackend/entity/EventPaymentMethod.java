@@ -2,16 +2,14 @@ package com.eventmanagement.EventManagementBackend.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.OffsetDateTime;
 
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "event_payment_methods")
 public class EventPaymentMethod {
@@ -45,7 +43,7 @@ public class EventPaymentMethod {
     private OffsetDateTime deletedAt;
 
     @PrePersist
-    public void prePersist() {
+    public void onCreate() {
         if (this.createdAt == null) {
             this.createdAt = OffsetDateTime.now();
         }
@@ -53,8 +51,13 @@ public class EventPaymentMethod {
     }
 
     @PreUpdate
-    public void preUpdate() {
+    public void onUpdate() {
         this.updatedAt = OffsetDateTime.now();
+    }
+
+    @PreRemove
+    protected void onRemove() {
+        deletedAt = OffsetDateTime.now();
     }
 
 }
