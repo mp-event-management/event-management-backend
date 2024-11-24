@@ -1,6 +1,7 @@
 package com.eventmanagement.EventManagementBackend.infrastructure.events.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +11,9 @@ import java.time.OffsetDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class UpdateEventRequestDTO {
+    private Integer eventId;
     private Integer userOrganizerId;
     private String title;
     private String description;
@@ -19,8 +22,8 @@ public class UpdateEventRequestDTO {
     private OffsetDateTime startDate;
     private OffsetDateTime endDate;
     private BigDecimal ticketPrice;
-    private int totalTicket;
-    private int availableTicket;
+    private Integer totalTicket;
+    private Integer availableTicket;
     private String eventStatus;
     private Integer cityId;
     private String address;
