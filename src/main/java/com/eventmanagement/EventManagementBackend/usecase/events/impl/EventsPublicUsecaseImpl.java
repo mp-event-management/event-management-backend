@@ -103,6 +103,12 @@ public class EventsPublicUsecaseImpl implements EventsPublicUsecase {
         // Fetch the related entities using the IDs
         UsersAccount userOrganizer = usersRepository.findById(createEventRequestDTO.getUserOrganizerId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid User Organizer ID"));
+
+        // Check if the user's role is organizer ( role_id == 2 )
+        if (userOrganizer.getRole().getRoleId() != 2) {
+            throw new IllegalArgumentException("Only users with the Organizer role can create an event");
+        }
+
         Category category = categoryRepository.findById(createEventRequestDTO.getCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Category ID"));
         City city = cityRepository.findById(createEventRequestDTO.getCityId())
