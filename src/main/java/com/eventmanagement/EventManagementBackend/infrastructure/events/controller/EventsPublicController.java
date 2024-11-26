@@ -1,9 +1,7 @@
 package com.eventmanagement.EventManagementBackend.infrastructure.events.controller;
 
 import com.eventmanagement.EventManagementBackend.common.response.ApiResponse;
-import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.CreateEventRequestDTO;
-import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.CreateEventResponseDTO;
-import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.UpdateEventRequestDTO;
+import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.*;
 import com.eventmanagement.EventManagementBackend.usecase.events.EventsPublicUsecase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,8 +18,22 @@ public class EventsPublicController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllEvents() {
-        return ApiResponse.successfulResponse("Get all events success", eventsPublicUsecase.getAllEvents());
+    public ResponseEntity<?> getAllEvents(
+            @RequestParam(required = false) Integer categoryId,
+            @RequestParam(required = false) Integer cityId,
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        FilterEventRequestDTO filterRequest = new FilterEventRequestDTO();
+        filterRequest.setCategoryId(categoryId);
+        filterRequest.setCityId(cityId);
+        filterRequest.setSearch(search);
+        filterRequest.setPage(page);
+        filterRequest.setSize(size);
+
+        PaginatedEventResponseDTO<EventDTO> events = eventsPublicUsecase.getAllEvents(filterRequest);
+        return ApiResponse.successfulResponse("Get all events success", events);
     }
 
     @GetMapping("/{id}")
@@ -37,9 +49,6 @@ public class EventsPublicController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateEvent(@PathVariable Integer id, @Validated @RequestBody UpdateEventRequestDTO updateEventRequestDTO) {
-        // Set eventId in the DTO if not provided in the request body
-//        updateEventRequestDTO.setEventId(id);
-
         // Call the eventId in the DTO to update the event
         UpdateEventRequestDTO updatedEvent = eventsPublicUsecase.updateEvent(id, updateEventRequestDTO);
 
