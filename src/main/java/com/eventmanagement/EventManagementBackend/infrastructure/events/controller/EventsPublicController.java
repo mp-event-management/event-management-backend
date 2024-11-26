@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/events")
 public class EventsPublicController {
     private final EventsPublicUsecase eventsPublicUsecase;
-
-
+    
     public EventsPublicController(EventsPublicUsecase eventsPublicUsecase) {
         this.eventsPublicUsecase = eventsPublicUsecase;
     }
