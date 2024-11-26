@@ -4,6 +4,7 @@ import com.eventmanagement.EventManagementBackend.entity.Category;
 import com.eventmanagement.EventManagementBackend.entity.City;
 import com.eventmanagement.EventManagementBackend.entity.Event;
 import com.eventmanagement.EventManagementBackend.entity.UsersAccount;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,9 +18,13 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateEventRequestDTO {
+    @NotNull
     private Integer userOrganizerId;
+    
     private String title;
     private String description;
+
+    @NotNull
     private Integer categoryId;
     private String eventImagesUrl;
     private OffsetDateTime startDate;

@@ -8,6 +8,7 @@ import com.eventmanagement.EventManagementBackend.entity.UsersAccount;
 import com.eventmanagement.EventManagementBackend.infrastructure.categories.repository.CategoryRepository;
 import com.eventmanagement.EventManagementBackend.infrastructure.cities.repository.CityRepository;
 import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.CreateEventRequestDTO;
+import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.CreateEventResponseDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.EventDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.UpdateEventRequestDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.events.mapper.EventMapper;
@@ -99,7 +100,7 @@ public class EventsPublicUsecaseImpl implements EventsPublicUsecase {
     }
 
     @Override
-    public CreateEventRequestDTO createEvent(CreateEventRequestDTO createEventRequestDTO) {
+    public CreateEventResponseDTO createEvent(CreateEventRequestDTO createEventRequestDTO) {
         // Fetch the related entities using the IDs
         UsersAccount userOrganizer = usersRepository.findById(createEventRequestDTO.getUserOrganizerId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid User Organizer ID"));
@@ -121,7 +122,7 @@ public class EventsPublicUsecaseImpl implements EventsPublicUsecase {
         Event savedEvent = eventsRepository.save(newEvent);
 
         // Return the response DTO
-        return new CreateEventRequestDTO(
+        return new CreateEventResponseDTO(
                 savedEvent.getUserOrganizer().getUserId(),
                 savedEvent.getTitle(),
                 savedEvent.getDescription(),
