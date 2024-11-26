@@ -3,6 +3,7 @@ package com.eventmanagement.EventManagementBackend.infrastructure.events.control
 import com.eventmanagement.EventManagementBackend.common.response.ApiResponse;
 import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.*;
 import com.eventmanagement.EventManagementBackend.usecase.events.EventsPublicUsecase;
+.
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

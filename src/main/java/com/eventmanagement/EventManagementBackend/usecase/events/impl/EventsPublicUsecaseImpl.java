@@ -38,7 +38,7 @@ public class EventsPublicUsecaseImpl implements EventsPublicUsecase {
 
     @Override
     public PaginatedEventResponseDTO<EventDTO> getAllEvents(FilterEventRequestDTO filterRequest) {
-        Pageable pageable = PageRequest.of(filterRequest.getPage(), filterRequest.getSize(), Sort.by("startDate").ascending());
+        Pageable pageable = PageRequest.of(filterRequest.getPage(), filterRequest.getSize(), Sort.by("eventId").ascending());
 
         // Specification dynamically
         Specification<Event> specification = Specification.where(null);
