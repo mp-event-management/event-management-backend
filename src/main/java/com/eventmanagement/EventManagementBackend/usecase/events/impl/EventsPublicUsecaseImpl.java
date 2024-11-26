@@ -20,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,7 +41,7 @@ public class EventsPublicUsecaseImpl implements EventsPublicUsecase {
     public PaginatedEventResponseDTO<EventDTO> getAllEvents(FilterEventRequestDTO filterRequest) {
         Pageable pageable = PageRequest.of(filterRequest.getPage(), filterRequest.getSize(), Sort.by("eventId").ascending());
 
-        // Specification dynamically
+        // Define Specification dynamically
         Specification<Event> specification = Specification.where(null);
 
         if (filterRequest.getCategoryId() != null) {
@@ -118,59 +119,32 @@ public class EventsPublicUsecaseImpl implements EventsPublicUsecase {
         Event existingEvent = eventsRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Event not found"));
 
-        // Fetch related entities if IDs are provided in the update DTO
-        if (updateEventRequestDTO.getCategoryId() != null) {
-            Category category = categoryRepository.findById(updateEventRequestDTO.getCategoryId())
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid Category ID"));
-            existingEvent.setCategory(category);
-        }
+        // Update related entities and fields only if data provided in the DTO
+        Optional.ofNullable(updateEventRequestDTO.getCategoryId())
+                .ifPresent(categoryId -> {
+                    Category category = categoryRepository.findById(categoryId)
+                            .orElseThrow(() -> new IllegalArgumentException("Invalid Category ID"));
+                    existingEvent.setCategory(category);
+                });
 
-        if (updateEventRequestDTO.getCityId() != null) {
-            City city = cityRepository.findById(updateEventRequestDTO.getCityId())
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid City ID"));
-            existingEvent.setCity(city);
-        }
+        Optional.ofNullable(updateEventRequestDTO.getCityId())
+                .ifPresent(cityId -> {
+                    City city = cityRepository.findById(cityId)
+                            .orElseThrow(() -> new IllegalArgumentException("Invalid City ID"));
+                    existingEvent.setCity(city);
+                });
 
         // Update fields of the existing event
-        if (updateEventRequestDTO.getTitle() != null) {
-            existingEvent.setTitle(updateEventRequestDTO.getTitle());
-        }
-
-        if (updateEventRequestDTO.getDescription() != null) {
-            existingEvent.setDescription(updateEventRequestDTO.getDescription());
-        }
-
-        if (updateEventRequestDTO.getEventImagesUrl() != null) {
-            existingEvent.setEventImagesUrl(updateEventRequestDTO.getEventImagesUrl());
-        }
-
-        if (updateEventRequestDTO.getStartDate() != null) {
-            existingEvent.setStartDate(updateEventRequestDTO.getStartDate());
-        }
-
-        if (updateEventRequestDTO.getEndDate() != null) {
-            existingEvent.setEndDate(updateEventRequestDTO.getEndDate());
-        }
-
-        if (updateEventRequestDTO.getTicketPrice() != null) {
-            existingEvent.setTicketPrice(updateEventRequestDTO.getTicketPrice());
-        }
-
-        if (updateEventRequestDTO.getTotalTicket() != null) {
-            existingEvent.setTotalTicket(updateEventRequestDTO.getTotalTicket());
-        }
-
-        if (updateEventRequestDTO.getAvailableTicket() != null) {
-            existingEvent.setAvailableTicket(updateEventRequestDTO.getAvailableTicket());
-        }
-
-        if (updateEventRequestDTO.getEventStatus() != null) {
-            existingEvent.setEventStatus(updateEventRequestDTO.getEventStatus());
-        }
-
-        if (updateEventRequestDTO.getAddress() != null) {
-            existingEvent.setAddress(updateEventRequestDTO.getAddress());
-        }
+        Optional.ofNullable(updateEventRequestDTO.getTitle()).ifPresent(existingEvent::setTitle);
+        Optional.ofNullable(updateEventRequestDTO.getDescription()).ifPresent(existingEvent::setDescription);
+        Optional.ofNullable(updateEventRequestDTO.getEventImagesUrl()).ifPresent(existingEvent::setEventImagesUrl);
+        Optional.ofNullable(updateEventRequestDTO.getStartDate()).ifPresent(existingEvent::setStartDate);
+        Optional.ofNullable(updateEventRequestDTO.getEndDate()).ifPresent(existingEvent::setEndDate);
+        Optional.ofNullable(updateEventRequestDTO.getTicketPrice()).ifPresent(existingEvent::setTicketPrice);
+        Optional.ofNullable(updateEventRequestDTO.getTotalTicket()).ifPresent(existingEvent::setTotalTicket);
+        Optional.ofNullable(updateEventRequestDTO.getAvailableTicket()).ifPresent(existingEvent::setAvailableTicket);
+        Optional.ofNullable(updateEventRequestDTO.getEventStatus()).ifPresent(existingEvent::setEventStatus);
+        Optional.ofNullable(updateEventRequestDTO.getAddress()).ifPresent(existingEvent::setAddress);
 
         // Save the updated event
         Event updatedEvent = eventsRepository.save(existingEvent);
