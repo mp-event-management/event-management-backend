@@ -26,7 +26,7 @@ public class UsersAccount {
     private Integer userId;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "role_id", nullable = false)
     @JsonBackReference  // Marks this as the back reference

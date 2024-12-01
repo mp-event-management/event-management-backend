@@ -2,6 +2,7 @@ package com.eventmanagement.EventManagementBackend.infrastructure.events.dto;
 
 import com.eventmanagement.EventManagementBackend.infrastructure.categories.dto.CategoryDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.cities.dto.CityDTO;
+import com.eventmanagement.EventManagementBackend.infrastructure.users.dto.UserProfileDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 public class EventDTO {
     private Integer eventId;
-    private Integer userOrganizerId;
+    private UserProfileDTO userOrganizer;
     private String title;
     private String description;
     private CategoryDTO category;

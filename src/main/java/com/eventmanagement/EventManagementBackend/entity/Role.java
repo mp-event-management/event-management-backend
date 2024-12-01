@@ -7,8 +7,6 @@ import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.OffsetDateTime;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Data
 @Entity
@@ -35,8 +33,6 @@ public class Role {
 
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
-    @OneToMany(mappedBy = "role")
-    private Set<UsersAccount> usersAccounts = new LinkedHashSet<>();
 
     @PrePersist
     public void onCreate() {
