@@ -10,6 +10,7 @@ import com.eventmanagement.EventManagementBackend.infrastructure.categories.repo
 import com.eventmanagement.EventManagementBackend.infrastructure.cities.dto.CityDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.cities.repository.CityRepository;
 import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.EventDTO;
+import com.eventmanagement.EventManagementBackend.infrastructure.users.dto.UserProfileDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.users.repository.UsersAccountRepository;
 
 public class EventMapper {
@@ -17,7 +18,13 @@ public class EventMapper {
     public static EventDTO mapToEventDto(Event event) {
         return new EventDTO(
                 event.getEventId(),
-                event.getUserOrganizer().getUserId(),
+                new UserProfileDTO(
+                        event.getUserOrganizer().getUserId(),
+                        event.getUserOrganizer().getRole(),
+                        event.getUserOrganizer().getName(),
+                        event.getUserOrganizer().getEmail(),
+                        event.getUserOrganizer().getProfilePictureUrl()
+                ),
                 event.getTitle(),
                 event.getDescription(),
                 new CategoryDTO(
@@ -40,10 +47,16 @@ public class EventMapper {
         );
     }
 
-    public static Event mapToEvent(EventDTO eventDTO, UsersAccountRepository usersRepository, CategoryRepository categoryRepository, CityRepository cityRepository) {
+    public static Event mapToEvent(
+            EventDTO eventDTO,
+            UsersAccountRepository usersRepository,
+            CategoryRepository categoryRepository,
+            CityRepository cityRepository) {
         // Fetch related entity using IDs from the repository
-        UsersAccount userOrganizer = usersRepository.findById(eventDTO.getUserOrganizerId())
+        UsersAccount userOrganizer = usersRepository.findById(eventDTO.getUserOrganizer().getUserId())
                 .orElseThrow(() -> new DataNotFoundException("User Organizer not found"));
+//        UsersAccount userOrganizer = usersRepository.findById(eventDTO.getUserOrganizerId())
+//                .orElseThrow(() -> new DataNotFoundException("User Organizer not found"));
 
         Category category = eventDTO.getCategory() != null
                 ? categoryRepository.findById(eventDTO.getCategory().getCategoryId())
