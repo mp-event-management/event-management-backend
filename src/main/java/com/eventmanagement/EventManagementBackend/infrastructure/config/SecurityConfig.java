@@ -9,13 +9,15 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.*;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 
@@ -29,12 +31,12 @@ public class SecurityConfig {
     private final PasswordEncoder passwordEncoder;
 
     public SecurityConfig
-    (
-        EventsPublicUsecase getEventsUsecase,
-        JwtConfigProperties jwtConfigProperties,
-        RsaKeyConfigProperties rsaKeyConfigProperties,
-        PasswordEncoder passwordEncoder
-    ) {
+            (
+                    EventsPublicUsecase getEventsUsecase,
+                    JwtConfigProperties jwtConfigProperties,
+                    RsaKeyConfigProperties rsaKeyConfigProperties,
+                    PasswordEncoder passwordEncoder
+            ) {
         this.getEventsUsecase = getEventsUsecase;
         this.jwtConfigProperties = jwtConfigProperties;
         this.rsaKeyConfigProperties = rsaKeyConfigProperties;
@@ -50,15 +52,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-            .csrf(AbstractHttpConfigurer::disable)
-            .cors(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(auth -> auth
-                // Define public routes
-                .requestMatchers("/error/**").permitAll()
-                .requestMatchers("/api/v1/auth/login").permitAll()
-                .requestMatchers("/api/v1/users/register").permitAll()
-                .anyRequest().permitAll())
-            .build();
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(new CorsConfigurationSourceImpl()))
+                .authorizeHttpRequests(auth -> auth
+                        // Define public routes
+                        .requestMatchers("/error/**").permitAll()
+                        .requestMatchers("/api/v1/auth/login").permitAll()
+                        .requestMatchers("/api/v1/users/register").permitAll()
+                        .anyRequest().permitAll())
+                .build();
     }
 
 //    @Bean
