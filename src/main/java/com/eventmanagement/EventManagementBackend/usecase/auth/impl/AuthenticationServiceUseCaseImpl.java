@@ -1,6 +1,6 @@
 package com.eventmanagement.EventManagementBackend.usecase.auth.impl;
 
-import com.eventmanagement.EventManagementBackend.DTO.TokenPairResponseDTO;
+import com.eventmanagement.EventManagementBackend.infrastructure.auth.DTO.TokenPairResponseDTO;
 import com.eventmanagement.EventManagementBackend.common.exceptions.DataNotFoundException;
 import com.eventmanagement.EventManagementBackend.infrastructure.users.dto.LoginRequestDTO;
 import com.eventmanagement.EventManagementBackend.usecase.auth.AuthenticationServiceUseCase;

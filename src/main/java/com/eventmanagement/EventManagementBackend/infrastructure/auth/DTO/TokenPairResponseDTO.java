@@ -1,4 +1,4 @@
-package com.eventmanagement.EventManagementBackend.DTO;
+package com.eventmanagement.EventManagementBackend.infrastructure.auth.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
