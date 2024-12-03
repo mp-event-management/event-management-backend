@@ -1,5 +1,6 @@
 package com.eventmanagement.EventManagementBackend.infrastructure.config;
 
+import com.eventmanagement.EventManagementBackend.usecase.auth.GetUserAuthDetailsUsecase;
 import com.eventmanagement.EventManagementBackend.usecase.events.EventsPublicUsecase;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -9,6 +10,9 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,6 +29,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 @EnableWebSecurity
 public class SecurityConfig {
+    private final GetUserAuthDetailsUsecase getUserAuthDetailsUsecase;
     private final EventsPublicUsecase getEventsUsecase;
     private final JwtConfigProperties jwtConfigProperties;
     private final RsaKeyConfigProperties rsaKeyConfigProperties;
@@ -35,19 +40,23 @@ public class SecurityConfig {
                     EventsPublicUsecase getEventsUsecase,
                     JwtConfigProperties jwtConfigProperties,
                     RsaKeyConfigProperties rsaKeyConfigProperties,
-                    PasswordEncoder passwordEncoder
+                    PasswordEncoder passwordEncoder,
+                    GetUserAuthDetailsUsecase getUserAuthDetailsUsecase
             ) {
         this.getEventsUsecase = getEventsUsecase;
         this.jwtConfigProperties = jwtConfigProperties;
         this.rsaKeyConfigProperties = rsaKeyConfigProperties;
         this.passwordEncoder = passwordEncoder;
+        this.getUserAuthDetailsUsecase = getUserAuthDetailsUsecase;
     }
 
-    // TODO: setting this later
-//    @Bean
-//    public AuthenticationManager authManager() {
-//
-//    }
+    @Bean
+    public AuthenticationManager authManager() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(getUserAuthDetailsUsecase);
+        authProvider.setPasswordEncoder(passwordEncoder);
+        return new ProviderManager(authProvider);
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
