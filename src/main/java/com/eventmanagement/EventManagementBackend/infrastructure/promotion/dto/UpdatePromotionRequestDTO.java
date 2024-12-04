@@ -13,26 +13,22 @@ import java.time.OffsetDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreatePromotionRequestDTO {
+public class UpdatePromotionRequestDTO {
     private Integer promotionId;
 
     @NotNull
     private Event event;
 
-    @NotNull
-    private String promotionType; // can be 'voucher' or 'dateBased'
+    private String promotionType; // can be 'VOUCHER' or 'DATEBASED'
 
-    @NotNull
     private String promotionCode;
 
     private BigDecimal discountPercentage;
 
     private Integer availableUses;
 
-    @NotNull
     private OffsetDateTime startDate;
 
-    @NotNull
     private OffsetDateTime endDate;
 
     public Promotion toEntity() {
