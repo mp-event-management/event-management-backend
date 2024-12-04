@@ -47,6 +47,21 @@ public class PromotionUsecaseImpl implements PromotionsUsecase {
             throw new IllegalArgumentException("Only organizer can create promotions");
         }
 
+        // Check the promotion type and validate availableUses
+        if ("VOUCHER".equalsIgnoreCase(req.getPromotionType())) {
+            // For VOUCHER type, availableUses must be provided
+            if (req.getAvailableUses() == null || req.getAvailableUses() <= 0) {
+                throw new IllegalArgumentException("VOUCHER promotion should have availableUses greater than 0");
+            }
+        } else if ("DATEBASED".equalsIgnoreCase(req.getPromotionType())) {
+            // For DATEBASED type, availableUses should not be included or null
+            if (req.getAvailableUses() != null) {
+                throw new IllegalArgumentException("DATEBASED promotion should not be provided");
+            }
+        } else {
+            throw new IllegalArgumentException("Invalid promotion type");
+        }
+
         // Validate if the event is created by the exact same organizer
 //        if (!event.getUserOrganizer().getUserId().equals(event.getUserOrganizer().getUserId())) {
 //            throw new IllegalArgumentException("The event does not belong to the organizer");
@@ -54,6 +69,11 @@ public class PromotionUsecaseImpl implements PromotionsUsecase {
 
         // Map the promotion request to the promotion entity
         Promotion newPromotion = req.toEntity();
+
+        // Define value for DATABASED type promotion
+        if ("DATABASED".equalsIgnoreCase(req.getPromotionType())) {
+            newPromotion.setAvailableUses(null);
+        }
 
         // Save the promotion
         Promotion savedPromotion = promotionRepository.save(newPromotion);
