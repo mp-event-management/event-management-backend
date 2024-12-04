@@ -12,7 +12,9 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -95,37 +97,22 @@ public class Event {
 
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
+
+    // RELATIONSHIP entity
     @OneToMany(mappedBy = "event")
     private Set<EventPaymentMethod> eventPaymentMethods = new LinkedHashSet<>();
+
     @OneToMany(mappedBy = "event")
     private Set<EventReview> eventReviews = new LinkedHashSet<>();
-    @OneToMany(mappedBy = "event")
-    private Set<Promotion> promotions = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER)
+    private List<Promotion> promotions = new ArrayList<>();
+
     @OneToMany(mappedBy = "event")
     private Set<Transaction> transactions = new LinkedHashSet<>();
+
     @OneToMany(mappedBy = "event")
     private Set<UserEventHistory> userEventHistories = new LinkedHashSet<>();
-
-    public Event(Integer eventId, UsersAccount userOrganizer, String title, String description,
-                 Category category, String eventImagesUrl, OffsetDateTime startDate, OffsetDateTime endDate,
-                 BigDecimal ticketPrice, Integer totalTicket, Integer availableTicket, String eventStatus,
-                 City city, String address
-    ) {
-        this.eventId = eventId;
-        this.userOrganizer = userOrganizer;
-        this.title = title;
-        this.description = description;
-        this.category = category;
-        this.eventImagesUrl = eventImagesUrl;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.ticketPrice = ticketPrice;
-        this.totalTicket = totalTicket;
-        this.availableTicket = availableTicket;
-        this.eventStatus = eventStatus;
-        this.city = city;
-        this.address = address;
-    }
 
     @PrePersist
     public void onCreate() {

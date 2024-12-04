@@ -20,7 +20,7 @@ import java.time.OffsetDateTime;
 public class CreateEventRequestDTO {
     @NotNull
     private Integer userOrganizerId;
-    
+
     private String title;
     private String description;
 

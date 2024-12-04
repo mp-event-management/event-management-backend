@@ -1,7 +1,6 @@
 package com.eventmanagement.EventManagementBackend.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -84,21 +83,29 @@ public class UsersAccount {
 
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
+
+    // RELATIONSHIP ENTITY
     @OneToMany(mappedBy = "user")
     private Set<EventReview> eventReviews = new LinkedHashSet<>();
+
     @OneToMany(mappedBy = "userOrganizer")
-    @JsonIgnore // Prevent recursion when serializing events
     private Set<Event> events = new LinkedHashSet<>();
-    @OneToMany(mappedBy = "userOrganizer")
-    private Set<Promotion> promotions = new LinkedHashSet<>();
+
+//    @OneToMany(mappedBy = "userOrganizer")
+//    private List<Promotion> promotions = new ArrayList<>();
+
     @OneToMany(mappedBy = "user")
     private Set<ReferralCode> referralCodes = new LinkedHashSet<>();
+
     @OneToMany(mappedBy = "user")
     private Set<ReferralPoint> referralPoints = new LinkedHashSet<>();
+
     @OneToMany(mappedBy = "user")
     private Set<ReferralUsage> referralUsages = new LinkedHashSet<>();
+
     @OneToMany(mappedBy = "userCustomer")
     private Set<Transaction> transactions = new LinkedHashSet<>();
+
     @OneToMany(mappedBy = "user")
     private Set<UserEventHistory> userEventHistories = new LinkedHashSet<>();
 

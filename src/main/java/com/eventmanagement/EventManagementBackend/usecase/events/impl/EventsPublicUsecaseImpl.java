@@ -30,7 +30,12 @@ public class EventsPublicUsecaseImpl implements EventsPublicUsecase {
     private final CategoryRepository categoryRepository;
     private final CityRepository cityRepository;
 
-    public EventsPublicUsecaseImpl(EventsRepository eventsRepository, UsersAccountRepository usersRepository, CategoryRepository categoryRepository, CityRepository cityRepository) {
+    public EventsPublicUsecaseImpl(
+            EventsRepository eventsRepository,
+            UsersAccountRepository usersRepository,
+            CategoryRepository categoryRepository,
+            CityRepository cityRepository
+    ) {
         this.eventsRepository = eventsRepository;
         this.usersRepository = usersRepository;
         this.categoryRepository = categoryRepository;
