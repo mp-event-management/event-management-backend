@@ -2,6 +2,7 @@ package com.eventmanagement.EventManagementBackend.infrastructure.events.dto;
 
 import com.eventmanagement.EventManagementBackend.infrastructure.categories.dto.CategoryDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.cities.dto.CityDTO;
+import com.eventmanagement.EventManagementBackend.infrastructure.promotion.dto.GetPromotionListDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.users.dto.UserProfileDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -28,4 +30,5 @@ public class EventDTO {
     private String eventStatus;
     private CityDTO city;
     private String address;
+    private List<GetPromotionListDTO> promotions;
 }

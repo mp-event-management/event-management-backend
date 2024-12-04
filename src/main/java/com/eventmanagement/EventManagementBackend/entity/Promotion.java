@@ -2,6 +2,7 @@ package com.eventmanagement.EventManagementBackend.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
@@ -29,29 +30,20 @@ public class Promotion {
     private Event event;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "user_organizer_id", nullable = false)
-    private UsersAccount userOrganizer;
-
-    @NotNull
     @Column(name = "promotion_type", nullable = false)
-    private Integer promotionType;
+    private String promotionType;
+
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "promotion_code", nullable = false)
+    private String promotionCode;
 
     @ColumnDefault("NULL")
     @Column(name = "discount_percentage", precision = 5, scale = 2)
     private BigDecimal discountPercentage;
 
-    @ColumnDefault("NULL")
-    @Column(name = "discount_value", precision = 10, scale = 2)
-    private BigDecimal discountValue;
-
-    @Column(name = "max_uses")
-    private Integer maxUses;
-
-    @ColumnDefault("0")
-    @Column(name = "current_uses")
-    private Integer currentUses;
+    @Column(name = "available_uses")
+    private Integer availableUses;
 
     @NotNull
     @Column(name = "start_date", nullable = false)
@@ -71,6 +63,7 @@ public class Promotion {
 
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
+
     @OneToMany(mappedBy = "promotion")
     private Set<Transaction> transactions = new LinkedHashSet<>();
 
