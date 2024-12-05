@@ -10,10 +10,6 @@ import com.eventmanagement.EventManagementBackend.usecase.auth.CreateUserUsecase
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CreateUserUsecaseImpl implements CreateUserUsecase {
