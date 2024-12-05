@@ -35,6 +35,7 @@ build/
 ### .env file ###
 .env
 !.env.example
+.env.onhold
 
 ###for mac##
 .DS_Store
