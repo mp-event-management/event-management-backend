@@ -35,7 +35,7 @@ public class CreateUserUsecaseImpl implements CreateUserUsecase {
             newUser.setEmail(req.getEmail());
             newUser.setPassword(req.getPassword());
             newUser.setRole(role);
-            newUser.setReferralCode("asdfasdf"); //hardcoded, logic not yet implemented
+            newUser.setReferralCode("asdfasdf"); //hardcoded, logic not yet implemented !
             newUser.setIsFirstTimeDiscount(true); //hardcoded, logic not yet implemented
             newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
 
