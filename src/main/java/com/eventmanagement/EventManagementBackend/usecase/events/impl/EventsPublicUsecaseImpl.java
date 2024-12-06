@@ -72,6 +72,46 @@ public class EventsPublicUsecaseImpl implements EventsPublicUsecase {
     }
 
     @Override
+    public PaginatedEventResponseDTO<EventDTO> getEventsByUserOrganizerId(Integer userOrganizerId, FilterEventRequestDTO filterRequest) {
+        int ORGANIZER_ROLE = 2;
+
+        // Fetch the user by ID to check their role is ORGANIZER
+        UsersAccount userOrganizer = usersRepository.findById(userOrganizerId)
+                .orElseThrow(() -> new DataNotFoundException("User organizer not found"));
+
+        // Check if the user is ORGANIZER
+        if (userOrganizer.getRole().getRoleId() != ORGANIZER_ROLE) {
+            throw new IllegalArgumentException("User is not an ORGANIZER");
+        }
+
+        Pageable pageable = PageRequest.of(filterRequest.getPage(), filterRequest.getSize(), Sort.by("eventId").ascending());
+
+        // Define Specification dynamically (optional, depending on your use case)
+        Specification<Event> specification = Specification.where(null);
+
+        if (filterRequest.getCategoryId() != null) {
+            specification = specification.and(FilterEventSpecifications.hasCategory(filterRequest.getCategoryId()));
+        }
+
+        if (filterRequest.getCityId() != null) {
+            specification = specification.and(FilterEventSpecifications.hasCity(filterRequest.getCityId()));
+        }
+
+        if (filterRequest.getSearch() != null && !filterRequest.getSearch().isEmpty()) {
+            specification = specification.and(FilterEventSpecifications.hasTitleLike(filterRequest.getSearch()));
+        }
+
+        Page<Event> eventPage = eventsRepository.findEventByUserOrganizerUserId(userOrganizerId, pageable);
+
+        return new PaginatedEventResponseDTO<>(
+                eventPage.getContent().stream().map(EventMapper::mapToEventDto).collect(Collectors.toList()),
+                eventPage.getTotalElements(),
+                eventPage.getTotalPages(),
+                eventPage.getNumber()
+        );
+    }
+
+    @Override
     public EventDTO getEventById(Integer eventId) {
         Event event = eventsRepository.findById(eventId).orElseThrow(() -> new DataNotFoundException("Event not found"));
 
