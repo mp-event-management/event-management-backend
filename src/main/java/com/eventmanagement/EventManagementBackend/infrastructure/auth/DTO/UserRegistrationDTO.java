@@ -17,5 +17,7 @@ public class UserRegistrationDTO {
     // Fields for manual input
     private String password;
     private String role;
+    private String referral_code;
     private String roleName;
+
 }

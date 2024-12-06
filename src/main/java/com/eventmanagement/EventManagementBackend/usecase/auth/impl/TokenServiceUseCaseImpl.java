@@ -50,7 +50,12 @@ public class TokenServiceUseCaseImpl implements TokenServiceUseCase {
                 .claim("type", tokenType.name())
                 .build();
 
-        return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        //using secret key
+        JwsHeader jwsHeader = JwsHeader.with(() -> "HS256").build();
+        return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
+
+        //using rsa key
+//        return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
     @Override
