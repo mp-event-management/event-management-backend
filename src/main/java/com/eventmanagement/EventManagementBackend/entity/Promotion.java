@@ -67,12 +67,6 @@ public class Promotion {
     @OneToMany(mappedBy = "promotion")
     private Set<Transaction> transactions = new LinkedHashSet<>();
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "user_organizer_id", nullable = false)
-    private UsersAccount userOrganizer;
-
     @PrePersist
     public void onCreate() {
         if (this.createdAt == null) {

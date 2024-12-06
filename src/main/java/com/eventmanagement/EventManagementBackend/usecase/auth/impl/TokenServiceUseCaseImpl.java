@@ -50,7 +50,6 @@ public class TokenServiceUseCaseImpl implements TokenServiceUseCase {
                 .claim("type", tokenType.name())
                 .build();
 
-
         return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
