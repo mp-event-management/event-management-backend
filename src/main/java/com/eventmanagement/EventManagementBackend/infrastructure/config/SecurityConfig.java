@@ -69,6 +69,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/login").permitAll()
                         .requestMatchers("/api/v1/users/register").permitAll()
                         .anyRequest().permitAll())
+                .oauth2ResourceServer(oauth2 -> {
+                    oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder()));
+                        }
+                )
                 .build();
     }
 

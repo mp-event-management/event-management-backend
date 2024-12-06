@@ -8,7 +8,7 @@ import java.time.Duration;
 
 @Service
 public class TokenBlacklistUsecaseImpl implements TokenBlacklistUsecase {
-    private final String REDIS_BLACKLIST_KEY = "fezz4ubackend_blacklist_token:";
+    private final String REDIS_BLACKLIST_KEY = "token:blacklist::";
     private final RedisTokenRepository redisTokenRepository;
 
     public TokenBlacklistUsecaseImpl(RedisTokenRepository redisTokenRepository) {
