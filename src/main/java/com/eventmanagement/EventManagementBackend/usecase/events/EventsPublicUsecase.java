@@ -6,6 +6,9 @@ public interface EventsPublicUsecase {
     //    List<GetEventsResponseDTO> getAllEvents();
     PaginatedEventResponseDTO<EventDTO> getAllEvents(FilterEventRequestDTO filterRequest);
 
+    //    List<GetEventsResponseDTO> getAllEvents();
+    PaginatedEventResponseDTO<EventDTO> getEventsByUserOrganizerId(Integer userOrganizerId, FilterEventRequestDTO filterRequest);
+
     //    GetEventsResponseDTO getEventById(Integer eventId);
     EventDTO getEventById(Integer eventId);
 

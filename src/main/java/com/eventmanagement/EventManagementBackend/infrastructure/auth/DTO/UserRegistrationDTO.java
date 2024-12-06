@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Getter
 @Setter
 public class UserRegistrationDTO {
-
     // Fields from OAuth2 (pre-filled)
     private String name;
     private String email;
@@ -19,5 +18,6 @@ public class UserRegistrationDTO {
     private String password;
     private String role;
     private String referral_code;
+    private String roleName;
 
 }

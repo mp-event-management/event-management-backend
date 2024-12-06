@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/events")
 public class EventsPublicController {
     private final EventsPublicUsecase eventsPublicUsecase;
-    
+
     public EventsPublicController(EventsPublicUsecase eventsPublicUsecase) {
         this.eventsPublicUsecase = eventsPublicUsecase;
     }
@@ -33,6 +33,30 @@ public class EventsPublicController {
 
         PaginatedEventResponseDTO<EventDTO> events = eventsPublicUsecase.getAllEvents(filterRequest);
         return ApiResponse.successfulResponse("Get all events success", events);
+    }
+
+    @GetMapping("/organizer/{userOrganizerId}")
+    public ResponseEntity<?> getEventsByUserOrganizer(
+            @PathVariable Integer userOrganizerId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(required = false) Integer categoryId,
+            @RequestParam(required = false) Integer cityId,
+            @RequestParam(required = false) String search
+    ) {
+        // Create a filter request DTO
+        FilterEventRequestDTO filterRequest = new FilterEventRequestDTO();
+        filterRequest.setCategoryId(categoryId);
+        filterRequest.setCityId(cityId);
+        filterRequest.setSearch(search);
+        filterRequest.setPage(page);
+        filterRequest.setSize(size);
+
+        // Get the events from the service
+        PaginatedEventResponseDTO<EventDTO> events = eventsPublicUsecase.getEventsByUserOrganizerId(userOrganizerId, filterRequest);
+
+        // Return the paginated response
+        return ApiResponse.successfulResponse("Get events success", events);
     }
 
     @GetMapping("/{id}")

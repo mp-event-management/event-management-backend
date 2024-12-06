@@ -109,9 +109,6 @@ public class UsersAccount {
     @OneToMany(mappedBy = "user")
     private Set<UserEventHistory> userEventHistories = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "userOrganizer")
-    private Set<Promotion> promotions = new LinkedHashSet<>();
-
     @PrePersist
     public void onCreate() {
         if (this.createdAt == null) {
