@@ -6,6 +6,7 @@ import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +24,9 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 
 @Configuration
@@ -76,30 +80,30 @@ public class SecurityConfig {
                 .build();
     }
 
+    @Bean
+    public JwtDecoder jwtDecoder() {
+        SecretKey originalKey = new SecretKeySpec(jwtConfigProperties.getSecret().getBytes(), "HmacSHA256");
+        return NimbusJwtDecoder.withSecretKey(originalKey).build();
+    }
+
+    @Bean
+    public JwtEncoder jwtEncoder() {
+        SecretKey key = new SecretKeySpec(jwtConfigProperties.getSecret().getBytes(), "HmacSHA256");
+        JWKSource<SecurityContext> immutableSecret = new ImmutableSecret<>(key);
+        return new NimbusJwtEncoder(immutableSecret);
+    }
+
+//    // Using Rsa secret key
 //    @Bean
 //    public JwtDecoder jwtDecoder() {
-//        SecretKey originalKey = new SecretKeySpec(jwtConfigProperties.getSecret().getBytes(), "HmacSHA256");
-//        return NimbusJwtDecoder.withSecretKey(originalKey).build();
+//        return NimbusJwtDecoder.withPublicKey(rsaKeyConfigProperties.publicKey()).build();
 //    }
 //
 //    @Bean
-//    public JwtEncoder jwtEncoder() {
-//        SecretKey key = new SecretKeySpec(jwtConfigProperties.getSecret().getBytes(), "HmacSHA256");
-//        JWKSource<SecurityContext> immutableSecret = new ImmutableSecret<>(key);
-//        return new NimbusJwtEncoder(immutableSecret);
+//    JwtEncoder jwtEncoder() {
+//        JWK jwk = new RSAKey.Builder(rsaKeyConfigProperties.publicKey()).privateKey(rsaKeyConfigProperties.privateKey()).build();
+//        JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
+//        return new NimbusJwtEncoder(jwks);
 //    }
-
-    // Using Rsa secret key
-    @Bean
-    public JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withPublicKey(rsaKeyConfigProperties.publicKey()).build();
-    }
-
-    @Bean
-    JwtEncoder jwtEncoder() {
-        JWK jwk = new RSAKey.Builder(rsaKeyConfigProperties.publicKey()).privateKey(rsaKeyConfigProperties.privateKey()).build();
-        JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
-        return new NimbusJwtEncoder(jwks);
-    }
 }
 
