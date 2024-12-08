@@ -24,6 +24,10 @@ public class EventsPublicController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+        // Validate page and size to ensure they are positive
+        if (page < 0) page = 0;
+        if (size <= 0) size = 10;
+
         FilterEventRequestDTO filterRequest = new FilterEventRequestDTO();
         filterRequest.setCategoryId(categoryId);
         filterRequest.setCityId(cityId);
@@ -44,6 +48,9 @@ public class EventsPublicController {
             @RequestParam(required = false) Integer cityId,
             @RequestParam(required = false) String search
     ) {
+        // Validate page and size to ensure they are positive
+        if (page < 0) page = 0;
+        if (size <= 0) size = 10;
         // Create a filter request DTO
         FilterEventRequestDTO filterRequest = new FilterEventRequestDTO();
         filterRequest.setCategoryId(categoryId);

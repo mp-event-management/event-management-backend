@@ -44,7 +44,11 @@ public class EventsPublicUsecaseImpl implements EventsPublicUsecase {
 
     @Override
     public PaginatedEventResponseDTO<EventDTO> getAllEvents(FilterEventRequestDTO filterRequest) {
-        Pageable pageable = PageRequest.of(filterRequest.getPage(), filterRequest.getSize(), Sort.by("eventId").ascending());
+        // Validate page and size parameters
+        int page = filterRequest.getPage() < 0 ? 0 : filterRequest.getPage();
+        int size = filterRequest.getSize() <= 0 ? 10 : filterRequest.getSize();
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("eventId").descending());
 
         // Define Specification dynamically
         Specification<Event> specification = Specification.where(null);
@@ -74,6 +78,10 @@ public class EventsPublicUsecaseImpl implements EventsPublicUsecase {
     @Override
     public PaginatedEventResponseDTO<EventDTO> getEventsByUserOrganizerId(Integer userOrganizerId, FilterEventRequestDTO filterRequest) {
         int ORGANIZER_ROLE = 2;
+        
+        // Validate page and size parameters
+        int page = filterRequest.getPage() < 0 ? 0 : filterRequest.getPage();
+        int size = filterRequest.getSize() <= 0 ? 10 : filterRequest.getSize();
 
         // Fetch the user by ID to check their role is ORGANIZER
         UsersAccount userOrganizer = usersRepository.findById(userOrganizerId)
@@ -84,7 +92,7 @@ public class EventsPublicUsecaseImpl implements EventsPublicUsecase {
             throw new IllegalArgumentException("User is not an ORGANIZER");
         }
 
-        Pageable pageable = PageRequest.of(filterRequest.getPage(), filterRequest.getSize(), Sort.by("eventId").ascending());
+        Pageable pageable = PageRequest.of(filterRequest.getPage(), filterRequest.getSize(), Sort.by("eventId").descending());
 
         // Define Specification dynamically (optional, depending on your use case)
         Specification<Event> specification = Specification.where(null);
