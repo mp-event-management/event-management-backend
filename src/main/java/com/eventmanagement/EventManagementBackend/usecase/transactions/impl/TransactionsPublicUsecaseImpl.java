@@ -6,6 +6,7 @@ import com.eventmanagement.EventManagementBackend.infrastructure.events.reposito
 import com.eventmanagement.EventManagementBackend.infrastructure.promotion.repository.PromotionRepository;
 import com.eventmanagement.EventManagementBackend.infrastructure.referralPoints.repository.ReferralPointsRepository;
 import com.eventmanagement.EventManagementBackend.infrastructure.tickets.repository.TicketsRepository;
+import com.eventmanagement.EventManagementBackend.infrastructure.transactions.dto.TransactionDetailsDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.transactions.dto.TransactionRequestDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.transactions.dto.TransactionResponseDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.transactions.repository.TransactionRepository;
@@ -222,5 +223,13 @@ public class TransactionsPublicUsecaseImpl implements TransactionsPublicUsecase 
                 "SUCCESS",
                 transaction.getInvoiceCode()
         );
+    }
+
+    @Override
+    public TransactionDetailsDTO getTransactionById(Integer transactionId) {
+        Transaction transaction = transactionRepository.findById(transactionId)
+                .orElseThrow(()->new DataNotFoundException("Transaction not found"));
+
+        return new TransactionDetailsDTO().mapToDTO(transaction);
     }
 }
