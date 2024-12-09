@@ -6,14 +6,16 @@ import com.eventmanagement.EventManagementBackend.infrastructure.events.reposito
 import com.eventmanagement.EventManagementBackend.infrastructure.promotion.repository.PromotionRepository;
 import com.eventmanagement.EventManagementBackend.infrastructure.referralPoints.repository.ReferralPointsRepository;
 import com.eventmanagement.EventManagementBackend.infrastructure.tickets.repository.TicketsRepository;
-import com.eventmanagement.EventManagementBackend.infrastructure.transactions.dto.TransactionDetailsDTO;
-import com.eventmanagement.EventManagementBackend.infrastructure.transactions.dto.TransactionRequestDTO;
-import com.eventmanagement.EventManagementBackend.infrastructure.transactions.dto.TransactionResponseDTO;
+import com.eventmanagement.EventManagementBackend.infrastructure.transactions.dto.*;
 import com.eventmanagement.EventManagementBackend.infrastructure.transactions.repository.TransactionRepository;
 import com.eventmanagement.EventManagementBackend.infrastructure.transactions.utils.Utils;
 import com.eventmanagement.EventManagementBackend.infrastructure.users.repository.UsersAccountRepository;
 import com.eventmanagement.EventManagementBackend.usecase.transactions.TransactionsPublicUsecase;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -21,6 +23,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionsPublicUsecaseImpl implements TransactionsPublicUsecase {
@@ -138,7 +141,8 @@ public class TransactionsPublicUsecaseImpl implements TransactionsPublicUsecase 
                     .toList();
 
             // Check if no valid points are found
-            if (sortedReferralPoints.isEmpty()) throw new IllegalStateException("No valid referral points available for use");
+            if (sortedReferralPoints.isEmpty())
+                throw new IllegalStateException("No valid referral points available for use");
 
             // Iterate over sorted points and apply to the total amount
             for (ReferralPoint referralPoint : sortedReferralPoints) {
@@ -228,8 +232,45 @@ public class TransactionsPublicUsecaseImpl implements TransactionsPublicUsecase 
     @Override
     public TransactionDetailsDTO getTransactionById(Integer transactionId) {
         Transaction transaction = transactionRepository.findById(transactionId)
-                .orElseThrow(()->new DataNotFoundException("Transaction not found"));
+                .orElseThrow(() -> new DataNotFoundException("Transaction not found"));
 
         return new TransactionDetailsDTO().mapToDTO(transaction);
+    }
+
+    @Override
+    public PaginatedTransactionDTO<TransactionResponseDTO> getAllTransactions(Integer customerId, FilterTransactionDTO filter) {
+        // Validate page and size parameters
+        int page = Math.max(filter.getPage(), 0);
+        int size = filter.getSize() <= 0 ? 10 : filter.getSize();
+
+        // Fetch transactions with pagination
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
+        Page<Transaction> transactionPage = transactionRepository.findByCustomer_UserId(customerId, pageable);
+
+        // Convert the page transaction into a list
+        List<TransactionResponseDTO> response = transactionPage.getContent().stream()
+                .map(transaction -> new TransactionResponseDTO(
+                        transaction.getId(),
+                        transaction.getEvent().getEventId(),
+                        transaction.getCustomer().getUserId(),
+                        transaction.getPromotion() != null ? transaction.getPromotion().getPromotionId() : null, // promotionId
+                        transaction.getTicketQuantity(),
+                        transaction.getTicketPrice(),
+                        transaction.getDiscountPercentage(),
+                        transaction.getTotalDiscount(),
+                        transaction.getReferralPointsUsed(),
+                        transaction.getFinalPrice(),
+                        transaction.getPaymentStatus(),
+                        transaction.getInvoiceCode()
+                ))
+                .collect(Collectors.toList());
+
+        return new PaginatedTransactionDTO<>(
+                response,
+                transactionPage.getTotalElements(),
+                transactionPage.getTotalPages(),
+                transactionPage.getNumber()
+        );
     }
 }
