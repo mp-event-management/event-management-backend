@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PaginatedTicketResponseDTO<T> {
-    private List<T> events;
+    private List<T> tickets;
     private long totalElements;
     private int totalPages;
     private int currentPage;

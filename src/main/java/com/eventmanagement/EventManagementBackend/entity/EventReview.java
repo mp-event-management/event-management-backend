@@ -38,9 +38,6 @@ public class EventReview {
     @Column(name = "review_text", length = Integer.MAX_VALUE)
     private String reviewText;
 
-    @Column(name = "feedback", length = Integer.MAX_VALUE)
-    private String feedback;
-
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
     private OffsetDateTime createdAt;

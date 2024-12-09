@@ -18,6 +18,7 @@ public class TicketResponseDTO {
     private Integer customerId;
     private String customerName;
     private String eventName;
+    private String eventImagesUrl;
     private OffsetDateTime eventStartDate;
     private OffsetDateTime eventEndDate;
     private BigDecimal price;
