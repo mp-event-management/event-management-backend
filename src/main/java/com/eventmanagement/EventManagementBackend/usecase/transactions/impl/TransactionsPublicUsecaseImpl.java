@@ -91,9 +91,20 @@ public class TransactionsPublicUsecaseImpl implements TransactionsPublicUsecase 
                 throw new DataNotFoundException("Promotion code is not valid for this event");
             }
 
+            // Check if promotion code start and end dates are within the event's start and end dates
+            if (promoCode.getStartDate().isBefore(event.getStartDate()) || promoCode.getStartDate().isAfter(event.getEndDate())) {
+                throw new IllegalStateException("Promotion code start date is not within the event's valid date range");
+            }
+
+            // Check if the promotion's end date is not later than the event's end date
+            if (promoCode.getEndDate().isAfter(event.getEndDate())) {
+                throw new IllegalStateException("Promotion code end date cannot be later than the event's end date");
+            }
+
             // Check if promotion code still valid
-            if (promoCode.getStartDate().isAfter(OffsetDateTime.now()) || promoCode.getEndDate().isBefore(OffsetDateTime.now())) {
-                throw new IllegalStateException("Promotion code is expired");
+            OffsetDateTime now = OffsetDateTime.now();
+            if (promoCode.getStartDate().isBefore(event.getStartDate()) || promoCode.getEndDate().isAfter(event.getEndDate())) {
+                throw new IllegalStateException("Promotion code's date range is outside of the event's date range");
             }
 
             // Check promotion code type 'DATEBASED' or 'VOUCHER'
@@ -112,15 +123,10 @@ public class TransactionsPublicUsecaseImpl implements TransactionsPublicUsecase 
             }
         }
 
-        // Total ticket amount
-        BigDecimal totalTicketAmount = ticketPrice.multiply(BigDecimal.valueOf(req.getTicketQuantity()));
-        // Apply promo code discount
-        BigDecimal discountAmount = totalTicketAmount.multiply(promoDiscountPercentage);
-        // Subtract discount from total amount
-        totalTicketAmount = totalTicketAmount.subtract(discountAmount);
-
-        // IF promoCode is null, do not set the promotionId in the response
-        Integer promotionId = promoCode != null ? promoCode.getPromotionId() : null;
+        BigDecimal totalTicketAmount = ticketPrice.multiply(BigDecimal.valueOf(req.getTicketQuantity())); // Total ticket amount
+        BigDecimal discountAmount = totalTicketAmount.multiply(promoDiscountPercentage); // Apply promo code discount
+        totalTicketAmount = totalTicketAmount.subtract(discountAmount); // Subtract discount from total amount
+        Integer promotionId = promoCode != null ? promoCode.getPromotionId() : null; // IF promoCode is null, do not set the promotionId in the response
 
         // CASE IF CUSTOMER USING REFERRALS POINTS TO PAY
         if (req.getIsUsePoints()) {
@@ -131,6 +137,9 @@ public class TransactionsPublicUsecaseImpl implements TransactionsPublicUsecase 
                     .filter(rp -> rp.getExpiryDate().isAfter(OffsetDateTime.now())) // only valid points
                     .sorted(Comparator.comparing(ReferralPoint::getExpiryDate))
                     .toList();
+
+            // Check if no valid points are found
+            if (sortedReferralPoints.isEmpty()) throw new IllegalStateException("No valid referral points available for use");
 
             // Iterate over sorted points and apply to the total amount
             for (ReferralPoint referralPoint : sortedReferralPoints) {
@@ -151,9 +160,6 @@ public class TransactionsPublicUsecaseImpl implements TransactionsPublicUsecase 
 
                 // Save updated referral points and remove fully used points
                 referralPointsRepository.saveAll(sortedReferralPoints);
-                referralPointsRepository.deleteAll(sortedReferralPoints.stream()
-                        .filter(rp -> rp.getPoints() == 0)
-                        .toList());
             }
         }
 
