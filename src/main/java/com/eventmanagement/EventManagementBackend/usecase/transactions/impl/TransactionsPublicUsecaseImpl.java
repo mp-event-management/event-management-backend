@@ -78,7 +78,6 @@ public class TransactionsPublicUsecaseImpl implements TransactionsPublicUsecase 
         BigDecimal referralPointsApplied = BigDecimal.ZERO;
         BigDecimal promoDiscountPercentage = BigDecimal.ZERO;
 
-
         // CASE IF CUSTOMER USING PROMOTION CODE
         if (req.getPromoCode() != null && !req.getPromoCode().trim().isEmpty()) {
 
@@ -126,7 +125,6 @@ public class TransactionsPublicUsecaseImpl implements TransactionsPublicUsecase 
         BigDecimal totalTicketAmount = ticketPrice.multiply(BigDecimal.valueOf(req.getTicketQuantity())); // Total ticket amount
         BigDecimal discountAmount = totalTicketAmount.multiply(promoDiscountPercentage); // Apply promo code discount
         totalTicketAmount = totalTicketAmount.subtract(discountAmount); // Subtract discount from total amount
-        Integer promotionId = promoCode != null ? promoCode.getPromotionId() : null; // IF promoCode is null, do not set the promotionId in the response
 
         // CASE IF CUSTOMER USING REFERRALS POINTS TO PAY
         if (req.getIsUsePoints()) {
@@ -173,19 +171,6 @@ public class TransactionsPublicUsecaseImpl implements TransactionsPublicUsecase 
 
         if (!paymentSuccessful) {
             throw new IllegalStateException("Payment processing failed");
-//            return new TransactionResponseDTO(
-//                    null,
-//                    event.getEventId(),
-//                    user.getUserId(),
-//                    null,
-//                    1,
-//                    ticketPrice,
-//                    promotionDiscount.add(referralPointsApplied),
-//                    promotionDiscount.add(referralPointsApplied),
-//                    referralPointsApplied,
-//                    ticketPrice,
-//                    "FAILED",
-//                    null);
         }
 
         // Create the transaction record
@@ -194,6 +179,7 @@ public class TransactionsPublicUsecaseImpl implements TransactionsPublicUsecase 
         transaction.setCustomer(user);
         transaction.setTicketQuantity(req.getTicketQuantity());
         transaction.setTicketPrice(ticketPrice);
+        transaction.setPromotion(promoCode);
         transaction.setDiscountPercentage(promoDiscountPercentage);
         transaction.setTotalDiscount(discountAmount);
         transaction.setReferralPointsUsed(referralPointsApplied);
@@ -224,15 +210,15 @@ public class TransactionsPublicUsecaseImpl implements TransactionsPublicUsecase 
 
         return new TransactionResponseDTO(
                 transaction.getId(),
-                event.getEventId(),
-                user.getUserId(),
-                promotionId,
-                req.getTicketQuantity(),
-                ticketPrice,
-                promoDiscountPercentage,
-                discountAmount,
-                referralPointsApplied,
-                totalTicketAmount,
+                transaction.getEvent().getEventId(),
+                transaction.getCustomer().getUserId(),
+                transaction.getPromotion().getPromotionId(),
+                transaction.getTicketQuantity(),
+                transaction.getTicketPrice(),
+                transaction.getDiscountPercentage(),
+                transaction.getTotalDiscount(),
+                transaction.getReferralPointsUsed(),
+                transaction.getFinalPrice(),
                 "SUCCESS",
                 transaction.getInvoiceCode()
         );
