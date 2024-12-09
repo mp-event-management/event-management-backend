@@ -4,15 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventReviewsRequestDTO {
+public class FilterEventReviewsDTO {
+    private String search;
 
-    private Integer eventId;
-    private Integer customerId;
-    private BigDecimal rating;
-    private String reviewText;
+    // Define default value
+    private int page = 0;
+    private int size = 5;
 }

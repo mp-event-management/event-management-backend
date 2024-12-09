@@ -4,15 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventReviewsRequestDTO {
-
-    private Integer eventId;
-    private Integer customerId;
-    private BigDecimal rating;
-    private String reviewText;
+public class PaginatedEventReviewsDTO<T> {
+    private List<T> eventReviews;
+    private long totalElements;
+    private int totalPages;
+    private int currentPage;
 }
