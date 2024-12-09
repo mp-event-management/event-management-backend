@@ -100,9 +100,6 @@ public class Event {
 
     // RELATIONSHIP entity
     @OneToMany(mappedBy = "event")
-    private Set<EventPaymentMethod> eventPaymentMethods = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "event")
     private Set<EventReview> eventReviews = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "event", fetch = FetchType.EAGER)

@@ -21,7 +21,7 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transactions_id_gen")
     @SequenceGenerator(name = "transactions_id_gen", sequenceName = "transactions_transaction_id_seq", allocationSize = 1)
     @Column(name = "transaction_id", nullable = false)
-    private Integer transactionId;
+    private Integer id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -32,28 +32,26 @@ public class Transaction {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "user_customer_id", nullable = false)
-    private UsersAccount userCustomer;
+    @JoinColumn(name = "customer_id", nullable = false)
+    private UsersAccount customer;
 
     @NotNull
     @Column(name = "ticket_quantity", nullable = false)
     private Integer ticketQuantity;
 
     @NotNull
-    @Column(name = "price_per_ticket", nullable = false, precision = 10, scale = 2)
-    private BigDecimal pricePerTicket;
+    @Column(name = "ticket_price", nullable = false, precision = 15, scale = 2)
+    private BigDecimal ticketPrice;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "promotion_id")
     private Promotion promotion;
 
-    @NotNull
-    @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
-    private BigDecimal totalPrice;
+    @Column(name = "discount_percentage", precision = 5, scale = 2)
+    private BigDecimal discountPercentage;
 
-    @NotNull
-    @Column(name = "total_discount", nullable = false, precision = 10, scale = 2)
+    @Column(name = "total_discount", precision = 10, scale = 2)
     private BigDecimal totalDiscount;
 
     @NotNull
@@ -66,7 +64,7 @@ public class Transaction {
     private String invoiceCode;
 
     @Size(max = 50)
-    @ColumnDefault("'pending'")
+    @ColumnDefault("'PENDING'")
     @Column(name = "payment_status", length = 50)
     private String paymentStatus;
 
@@ -80,8 +78,13 @@ public class Transaction {
 
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
+
     @OneToMany(mappedBy = "transaction")
-    private Set<Payment> payments = new LinkedHashSet<>();
+    private Set<Ticket> tickets = new LinkedHashSet<>();
+
+    @ColumnDefault("0")
+    @Column(name = "referral_points_used", precision = 15, scale = 2)
+    private BigDecimal referralPointsUsed;
 
     @PrePersist
     public void onCreate() {

@@ -1,5 +1,10 @@
 package com.eventmanagement.EventManagementBackend.usecase.transactions;
 
-public interface TransactionsPublicUsecase {
+import com.eventmanagement.EventManagementBackend.infrastructure.transactions.dto.TransactionRequestDTO;
+import com.eventmanagement.EventManagementBackend.infrastructure.transactions.dto.TransactionResponseDTO;
+import jakarta.transaction.Transactional;
 
+public interface TransactionsPublicUsecase {
+    @Transactional
+    TransactionResponseDTO createTransaction(TransactionRequestDTO req);
 }

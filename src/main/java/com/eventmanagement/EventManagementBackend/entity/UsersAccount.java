@@ -1,6 +1,5 @@
 package com.eventmanagement.EventManagementBackend.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -11,7 +10,9 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -28,7 +29,6 @@ public class UsersAccount {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "role_id", nullable = false)
-    @JsonBackReference  // Marks this as the back reference
     private Role role;
 
     @Size(max = 150)
@@ -98,13 +98,13 @@ public class UsersAccount {
     private Set<ReferralCode> referralCodes = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "user")
-    private Set<ReferralPoint> referralPoints = new LinkedHashSet<>();
+    private List<ReferralPoint> referralPoints = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private Set<ReferralUsage> referralUsages = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "userCustomer")
-    private Set<Transaction> transactions = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "customer")
+    private List<Transaction> transactions = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private Set<UserEventHistory> userEventHistories = new LinkedHashSet<>();
