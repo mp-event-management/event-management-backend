@@ -50,7 +50,7 @@ public class EventReviewsPublicUsecaseImpl implements EventReviewsPublicUsecase 
         }
 
         // Check if have any ticket for the event
-        boolean hasValidTicket = ticketsRepository.existsByCustomerUserIdAndEvent_EventId(request.getEventId(), request.getCustomerId());
+        boolean hasValidTicket = ticketsRepository.existsByEventEventIdAndCustomerUserId(request.getEventId(), request.getCustomerId());
 
         if (!hasValidTicket) throw new DataNotFoundException("Ticket not for this event");
 

@@ -13,6 +13,7 @@ public class EventReviewsRequestDTO {
 
     private Integer eventId;
     private Integer customerId;
+    private Integer ticketId;
     private BigDecimal rating;
     private String reviewText;
 }

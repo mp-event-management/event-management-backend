@@ -105,7 +105,6 @@ public class TransactionsPublicUsecaseImpl implements TransactionsPublicUsecase 
             }
 
             // Check if promotion code still valid
-            OffsetDateTime now = OffsetDateTime.now();
             if (promoCode.getStartDate().isBefore(event.getStartDate()) || promoCode.getEndDate().isAfter(event.getEndDate())) {
                 throw new IllegalStateException("Promotion code's date range is outside of the event's date range");
             }
@@ -167,16 +166,11 @@ public class TransactionsPublicUsecaseImpl implements TransactionsPublicUsecase 
         }
 
         // Check if the final price is zero or negative, and handle it
-        if (ticketPrice.compareTo(BigDecimal.ZERO) < 0) {
-            ticketPrice = BigDecimal.ZERO;
-        }
+        if (ticketPrice.compareTo(BigDecimal.ZERO) < 0) ticketPrice = BigDecimal.ZERO;
 
         // Process transaction and handle payment
         boolean paymentSuccessful = Utils.processPayment(ticketPrice);
-
-        if (!paymentSuccessful) {
-            throw new IllegalStateException("Payment processing failed");
-        }
+        if (!paymentSuccessful) throw new IllegalStateException("Payment processing failed");
 
         // Create the transaction record
         Transaction transaction = new Transaction();
@@ -217,7 +211,7 @@ public class TransactionsPublicUsecaseImpl implements TransactionsPublicUsecase 
                 transaction.getId(),
                 transaction.getEvent().getEventId(),
                 transaction.getCustomer().getUserId(),
-                transaction.getPromotion().getPromotionId(),
+                transaction.getPromotion() != null ? transaction.getPromotion().getPromotionId() : null,
                 transaction.getTicketQuantity(),
                 transaction.getTicketPrice(),
                 transaction.getDiscountPercentage(),
@@ -234,7 +228,26 @@ public class TransactionsPublicUsecaseImpl implements TransactionsPublicUsecase 
         Transaction transaction = transactionRepository.findById(transactionId)
                 .orElseThrow(() -> new DataNotFoundException("Transaction not found"));
 
-        return new TransactionDetailsDTO().mapToDTO(transaction);
+        return new TransactionDetailsDTO(
+                transaction.getId(),
+                transaction.getEvent().getEventId(),
+                transaction.getCustomer().getUserId(),
+                transaction.getCustomer().getName(),
+                transaction.getEvent().getTitle(),
+                transaction.getEvent().getStartDate(),
+                transaction.getEvent().getEndDate(),
+                transaction.getEvent().getCity().getName(),
+                transaction.getEvent().getAddress(),
+                transaction.getPromotion() != null ? transaction.getPromotion().getPromotionId() : null, // promotionId
+                transaction.getTicketQuantity(),
+                transaction.getTicketPrice(),
+                transaction.getDiscountPercentage(),
+                transaction.getTotalDiscount(),
+                transaction.getReferralPointsUsed(),
+                transaction.getFinalPrice(),
+                transaction.getPaymentStatus(),
+                transaction.getInvoiceCode()
+        );
     }
 
     @Override
