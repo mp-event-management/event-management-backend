@@ -5,5 +5,8 @@ import com.eventmanagement.EventManagementBackend.infrastructure.tickets.dto.Pag
 import com.eventmanagement.EventManagementBackend.infrastructure.tickets.dto.TicketResponseDTO;
 
 public interface TicketsPublicUsecase {
+
     PaginatedTicketResponseDTO<TicketResponseDTO> getAllTicketsByCustomerId(Integer customerId, FilterTicketDTO filter);
+
+    TicketResponseDTO getTicketById(Integer ticketId);
 }

@@ -1,5 +1,6 @@
 package com.eventmanagement.EventManagementBackend.usecase.tickets.impl;
 
+import com.eventmanagement.EventManagementBackend.common.exceptions.DataNotFoundException;
 import com.eventmanagement.EventManagementBackend.entity.Ticket;
 import com.eventmanagement.EventManagementBackend.infrastructure.tickets.dto.FilterTicketDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.tickets.dto.PaginatedTicketResponseDTO;
@@ -60,4 +61,26 @@ public class TicketsPublicUsecaseImpl implements TicketsPublicUsecase {
                 ticketPage.getNumber()
         );
     }
+
+    @Override
+    public TicketResponseDTO getTicketById(Integer ticketId) {
+        Ticket ticket = ticketsRepository.findById(ticketId)
+                .orElseThrow(() -> new DataNotFoundException("Ticket not found"));
+
+        return new TicketResponseDTO(
+                ticket.getId(),
+                ticket.getTransaction().getId(),
+                ticket.getEvent().getEventId(),
+                ticket.getCustomer().getUserId(),
+                ticket.getCustomer().getName(),
+                ticket.getEvent().getTitle(),
+                ticket.getEvent().getStartDate(),
+                ticket.getEvent().getEndDate(),
+                ticket.getTransaction().getTicketPrice(),
+                ticket.getStatus(),
+                ticket.getIssuedate(),
+                ticket.getValidUntil()
+        );
+    }
+
 }

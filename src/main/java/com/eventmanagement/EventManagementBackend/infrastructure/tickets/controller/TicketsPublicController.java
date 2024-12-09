@@ -50,6 +50,10 @@ public class TicketsPublicController {
                 ticketsPublicUsecase.getAllTicketsByCustomerId(customerId, filterTicketDTO);
 
         return ApiResponse.successfulResponse("Get all tickets by customer id successful", paginatedTickets);
+    }
 
+    @GetMapping("/{ticketId}")
+    public ResponseEntity<?> getTicketById(@PathVariable Integer ticketId) {
+        return ApiResponse.successfulResponse("Get ticket by id successful", ticketsPublicUsecase.getTicketById(ticketId));
     }
 }
