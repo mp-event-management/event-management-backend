@@ -1,6 +1,7 @@
 package com.eventmanagement.EventManagementBackend.infrastructure.eventReviews.controller;
 
 import com.eventmanagement.EventManagementBackend.common.response.ApiResponse;
+import com.eventmanagement.EventManagementBackend.infrastructure.eventReviews.dto.EventReviewsRequestDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.eventReviews.dto.EventReviewsResponseDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.eventReviews.dto.FilterEventReviewsDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.eventReviews.dto.PaginatedEventReviewsDTO;
@@ -38,5 +39,11 @@ public class EventReviewsPublicController {
                 eventReviewsPublicUsecase.getAllReviewsByEventId(eventId, filterEventReviewDTO);
 
         return ApiResponse.successfulResponse("Get all event reviews by event id successful", paginatedEventReviews);
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createReviews(@RequestBody EventReviewsRequestDTO request) {
+        EventReviewsResponseDTO createReview = eventReviewsPublicUsecase.createEventReview(request);
+        return ApiResponse.successfulResponse("Successful sent your rating and reviews", createReview);
     }
 }
