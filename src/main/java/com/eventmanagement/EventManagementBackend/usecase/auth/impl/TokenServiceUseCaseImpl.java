@@ -5,8 +5,8 @@ import com.eventmanagement.EventManagementBackend.entity.UsersAccount;
 import com.eventmanagement.EventManagementBackend.infrastructure.users.repository.UsersAccountRepository;
 import com.eventmanagement.EventManagementBackend.usecase.auth.TokenServiceUseCase;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -17,7 +17,7 @@ public class TokenServiceUseCaseImpl implements TokenServiceUseCase {
     private final UsersAccountRepository usersRepository;
     private final JwtDecoder jwtDecoder;
 
-    private final long ACCESS_TOKEN_EXPIRY = 900L; // 15 minutes
+    private final long ACCESS_TOKEN_EXPIRY = 2600L; // 45 minutes
     private final long REFRESH_TOKEN_EXPIRY = 86400L; // 24 hours
 
     public TokenServiceUseCaseImpl(JwtEncoder jwtEncoder, UsersAccountRepository usersRepository, JwtDecoder jwtDecoder) {
@@ -47,6 +47,7 @@ public class TokenServiceUseCaseImpl implements TokenServiceUseCase {
                 .subject(email)
                 .claim("scope", scope)
                 .claim("userId", user.getUserId())
+                .claim("name", user.getName())
                 .claim("type", tokenType.name())
                 .build();
 
@@ -70,6 +71,7 @@ public class TokenServiceUseCaseImpl implements TokenServiceUseCase {
                 .claim("scope", jwt.getClaimAsString("scope"))
                 .claim("userId", jwt.getClaimAsString("userId"))
                 .claim("type", TokenType.ACCESS.name())
+                .claim("name", jwt.getClaims().get("name"))
                 .build();
 
         JwsHeader jwsHeader = JwsHeader.with(() -> "HS256").build();
