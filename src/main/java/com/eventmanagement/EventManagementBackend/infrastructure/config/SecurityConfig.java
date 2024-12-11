@@ -2,10 +2,6 @@ package com.eventmanagement.EventManagementBackend.infrastructure.config;
 
 import com.eventmanagement.EventManagementBackend.usecase.auth.GetUserAuthDetailsUsecase;
 import com.eventmanagement.EventManagementBackend.usecase.events.EventsPublicUsecase;
-import com.nimbusds.jose.jwk.JWK;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
@@ -18,6 +14,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -71,9 +68,19 @@ public class SecurityConfig {
                         .requestMatchers("/error/**").permitAll()
                         .requestMatchers("/api/v1/auth/login").permitAll()
                         .requestMatchers("/api/v1/users/register").permitAll()
-                        .anyRequest().permitAll())
+                        .requestMatchers("/api/v1/events").permitAll()
+                        .requestMatchers("/api/v1/events/*").permitAll()
+                        .requestMatchers("/api/v1/events/organizer/*").permitAll()
+                        .requestMatchers("/api/v1/organizer/*").permitAll()
+                        .requestMatchers("/api/v1/tickets/customer/*").permitAll()
+                        .requestMatchers("/api/v1/tickets/*").permitAll()
+                        .requestMatchers("/api/v1/transactions/customer/*").permitAll()
+                        .requestMatchers("/api/v1/auth/logout/").permitAll()
+                        .anyRequest().authenticated())
+//                        .anyRequest().permitAll())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(oauth2 -> {
-                    oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder()));
+                            oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder()));
                         }
                 )
                 .build();
