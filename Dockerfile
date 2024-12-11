@@ -1,46 +1,27 @@
-## Multistage build proccess
-#
-## Stage 1: Build the application
-#FROM maven:3.9.9-eclipse-temurin-21 AS build
-#WORKDIR /app
-#
-## Copy the pom.xml and download dependencies
-#COPY pom.xml .
-#RUN #mvn dependency:go-offline -B
-#
-## Copy the source code and build the application
-#COPY src ./src
-#RUN mvn clean package -DskipTests
-#
-## Debugging: Add the following command after the mvn package step
-#RUN #mvn clean package -DskipTests && ls -R /app/target
-#
-#RUN #ls -al /app/target/
-#
-## Stage 2: Create the final image
-#FROM eclipse-temurin:21-jre-alpine
-#WORKDIR /app
-#
-## Copy the built jar file from the build stage
-#COPY --from=build /app/target/EventManagementBackend-0.0.1-SNAPSHOT.jar app.jar
-#
-## Expose the port the app runs on
-#EXPOSE 8080
-#
-## Run the application
-#ENTRYPOINT ["java", "-jar", "app.jar"]
+# Multistage build proccess
 
-# Use an official OpenJDK runtime as a parent image
-FROM openjdk:22-jdk-slim
-
-# Set the working directory in the container
+# Stage 1: Build the application
+FROM maven:3.9.9-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# Copy the Spring Boot application JAR file to the container
-COPY target/*.jar app.jar
+# Copy the pom.xml and download dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
 
-# Expose the port your application runs on
+# Copy the source code and build the application
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# Stage 2: Create the final image
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+
+# Copy the built jar file from the build stage
+COPY --from=build /app/target/*.jar app.jar
+
+# Expose the port the app runs on
 EXPOSE 8080
 
-# Command to run the JAR file
+# Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
