@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
     Page<Transaction> findByCustomer_UserId(int customerId, Pageable pageable);
+
+    boolean existsByCustomer_UserIdAndEvent_EventId(Integer customerId, Integer eventId);
 }

@@ -61,6 +61,13 @@ public class TransactionsPublicUsecaseImpl implements TransactionsPublicUsecase 
         Event event = eventsRepository.findById(req.getEventId())
                 .orElseThrow(() -> new DataNotFoundException("Event not found"));
 
+        // Check if the customer already purchased a ticket for the event
+        boolean hasBoughtTicket = transactionRepository
+                .existsByCustomer_UserIdAndEvent_EventId(req.getCustomerId(), req.getEventId());
+
+        if (hasBoughtTicket)
+            throw new DataNotFoundException("You have already bought a ticket for this event and cannot buy again.");
+
         // check if the event still ongoing or not done
         if (event.getEndDate().isBefore(OffsetDateTime.now())) {
             throw new IllegalStateException("Event already completed");
@@ -95,18 +102,13 @@ public class TransactionsPublicUsecaseImpl implements TransactionsPublicUsecase 
             }
 
             // Check if promotion code start and end dates are within the event's start and end dates
-            if (promoCode.getStartDate().isBefore(event.getStartDate()) || promoCode.getStartDate().isAfter(event.getEndDate())) {
-                throw new IllegalStateException("Promotion code start date is not within the event's valid date range");
-            }
-
-            // Check if the promotion's end date is not later than the event's end date
-            if (promoCode.getEndDate().isAfter(event.getEndDate())) {
-                throw new IllegalStateException("Promotion code end date cannot be later than the event's end date");
-            }
+//            if (promoCode.getStartDate().isBefore(event.getStartDate()) || promoCode.getStartDate().isAfter(event.getEndDate())) {
+//                throw new IllegalStateException("Promotion code start date is not within the event's valid date range");
+//            }
 
             // Check if promotion code still valid
-            if (promoCode.getStartDate().isBefore(event.getStartDate()) || promoCode.getEndDate().isAfter(event.getEndDate())) {
-                throw new IllegalStateException("Promotion code's date range is outside of the event's date range");
+            if (promoCode.getStartDate().isBefore(event.getStartDate()) || promoCode.getEndDate().isAfter(event.getEndDate()) || promoCode.getStartDate().isAfter(event.getEndDate())) {
+                throw new IllegalStateException("Promotion code is not valid within the event's date range");
             }
 
             // Check promotion code type 'DATEBASED' or 'VOUCHER'
@@ -132,6 +134,11 @@ public class TransactionsPublicUsecaseImpl implements TransactionsPublicUsecase 
         // CASE IF CUSTOMER USING REFERRALS POINTS TO PAY
         if (req.getIsUsePoints()) {
             List<ReferralPoint> validReferralPoints = referralPointsRepository.findByUser_UserId(user.getUserId()); // Required type: Iterable <java. lang. Integer> provided Integer
+
+            boolean allPointsZero = validReferralPoints.stream()
+                    .allMatch(rp -> rp.getPoints() == 0);
+
+            if (allPointsZero) throw new IllegalStateException("No valid referral points available to use");
 
             // Filter referral points sort by ascending expired date
             List<ReferralPoint> sortedReferralPoints = validReferralPoints.stream()
