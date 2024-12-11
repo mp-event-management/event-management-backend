@@ -11,7 +11,7 @@ public class CorsConfigurationSourceImpl implements CorsConfigurationSource {
     @Override
     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
+        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type", "Application"));
         corsConfiguration.setAllowedOriginPatterns(List.of("http://localhost:3001", "http://localhost:3000",
                 "http://0.0.0.0:3000", "http://host.docker.internal:3000"));
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
