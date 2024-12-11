@@ -1,6 +1,7 @@
 package com.eventmanagement.EventManagementBackend.infrastructure.eventReviews.controller;
 
 import com.eventmanagement.EventManagementBackend.common.response.ApiResponse;
+import com.eventmanagement.EventManagementBackend.infrastructure.auth.Claims;
 import com.eventmanagement.EventManagementBackend.infrastructure.eventReviews.dto.EventReviewsRequestDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.eventReviews.dto.EventReviewsResponseDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.eventReviews.dto.FilterEventReviewsDTO;
@@ -43,6 +44,8 @@ public class EventReviewsPublicController {
 
     @PostMapping
     public ResponseEntity<?> createReviews(@RequestBody EventReviewsRequestDTO request) {
+        Long customerId = Claims.getUserIdFromJwt();
+        request.setCustomerId(customerId.intValue());
         EventReviewsResponseDTO createReview = eventReviewsPublicUsecase.createEventReview(request);
         return ApiResponse.successfulResponse("Successful sent your rating and reviews", createReview);
     }

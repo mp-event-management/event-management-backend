@@ -1,12 +1,15 @@
 package com.eventmanagement.EventManagementBackend.infrastructure.events.controller;
 
 import com.eventmanagement.EventManagementBackend.common.response.ApiResponse;
+import com.eventmanagement.EventManagementBackend.infrastructure.auth.Claims;
 import com.eventmanagement.EventManagementBackend.infrastructure.events.dto.*;
 import com.eventmanagement.EventManagementBackend.usecase.events.EventsPublicUsecase;
+import lombok.extern.java.Log;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+@Log
 @RestController
 @RequestMapping("/api/v1/events")
 public class EventsPublicController {
@@ -73,6 +76,9 @@ public class EventsPublicController {
 
     @PostMapping
     public ResponseEntity<?> createEvent(@RequestBody CreateEventRequestDTO createEventRequestDTO) {
+        Long organizerId = Claims.getUserIdFromJwt();
+        log.info(String.valueOf(organizerId));
+        createEventRequestDTO.setUserOrganizerId(organizerId.intValue());
         CreateEventResponseDTO createdEvent = eventsPublicUsecase.createEvent(createEventRequestDTO);
         return ApiResponse.successfulResponse("Create an event success", createdEvent);
     }
