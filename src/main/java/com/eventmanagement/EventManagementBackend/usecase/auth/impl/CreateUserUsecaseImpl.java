@@ -25,24 +25,24 @@ public class CreateUserUsecaseImpl implements CreateUserUsecase {
 
     @Override
     @CachePut(value = "userDetailResponseDTO", key = "#result.id")
-    public UserDetailResponseDTO createUser(UserRegistrationDTO req){
+    public UserDetailResponseDTO createUser(UserRegistrationDTO req) {
 
-            Role role = roleRepository.findByName(req.getRole())
-                    .orElseThrow(() -> new RuntimeException("Role not found"));
+        Role role = roleRepository.findByName(req.getRole())
+                .orElseThrow(() -> new RuntimeException("Role not found"));
 
-            UsersAccount newUser = new UsersAccount();
-            newUser.setName(req.getName());
-            newUser.setEmail(req.getEmail());
-            newUser.setPassword(req.getPassword());
-            newUser.setRole(role);
-            newUser.setReferralCode("asdfasdf"); //hardcoded, logic not yet implemented !
-            if(req.getReferral_code() != null) { //to be implemented to find existing user's code from existing user in db
-                newUser.setIsFirstTimeDiscount(true); //hardcoded, logic not yet implemented
-            }
-            newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+        UsersAccount newUser = new UsersAccount();
+        newUser.setName(req.getName());
+        newUser.setEmail(req.getEmail());
+        newUser.setPassword(req.getPassword());
+        newUser.setRole(role);
+//            newUser.setReferralCode("asdfasdf"); //hardcoded, logic not yet implemented !
+        if (req.getReferral_code() != null) { //to be implemented to find existing user's code from existing user in db
+            newUser.setIsFirstTimeDiscount(true); //hardcoded, logic not yet implemented
+        }
+        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
 
-            var savedUser = usersRepository.save(newUser);
-            return new UserDetailResponseDTO(savedUser.getUserId(), savedUser.getEmail());
+        var savedUser = usersRepository.save(newUser);
+        return new UserDetailResponseDTO(savedUser.getUserId(), savedUser.getEmail());
 
 
     }

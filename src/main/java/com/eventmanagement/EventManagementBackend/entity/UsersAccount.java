@@ -10,10 +10,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Data
 @Entity
@@ -115,6 +112,7 @@ public class UsersAccount {
             this.createdAt = OffsetDateTime.now();
         }
         this.updatedAt = OffsetDateTime.now();
+        this.referralCode = UUID.randomUUID().toString();
     }
 
     @PreUpdate
