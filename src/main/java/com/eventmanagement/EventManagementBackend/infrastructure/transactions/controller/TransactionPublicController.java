@@ -3,6 +3,7 @@ package com.eventmanagement.EventManagementBackend.infrastructure.transactions.c
 import com.eventmanagement.EventManagementBackend.common.exceptions.DataNotFoundException;
 import com.eventmanagement.EventManagementBackend.common.response.ApiResponse;
 import com.eventmanagement.EventManagementBackend.entity.UsersAccount;
+import com.eventmanagement.EventManagementBackend.infrastructure.auth.Claims;
 import com.eventmanagement.EventManagementBackend.infrastructure.transactions.dto.FilterTransactionDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.transactions.dto.PaginatedTransactionDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.transactions.dto.TransactionRequestDTO;
@@ -61,6 +62,9 @@ public class TransactionPublicController {
 
     @PostMapping
     public ResponseEntity<?> createTransaction(@RequestBody @Validated TransactionRequestDTO request) {
+        Long userId = Claims.getUserIdFromJwt();
+        request.setCustomerId(userId.intValue());
+
         TransactionResponseDTO newTransaction = transactionsPublicUsecase.createTransaction(request);
         return ApiResponse.successfulResponse("Purchase ticket successful", newTransaction);
     }
