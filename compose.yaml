@@ -1,4 +1,13 @@
 services:
+  backend-app:
+    container_name: backend-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - 8080:8080
   postgres:
     image: postgres:15-alpine
     container_name: rmp_container

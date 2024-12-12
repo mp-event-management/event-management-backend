@@ -68,14 +68,20 @@ public class SecurityConfig {
                         .requestMatchers("/error/**").permitAll()
                         .requestMatchers("/api/v1/auth/login").permitAll()
                         .requestMatchers("/api/v1/users/register").permitAll()
+                        .requestMatchers("/api/v1/auth/logout/").permitAll()
                         .requestMatchers("/api/v1/events").permitAll()
                         .requestMatchers("/api/v1/events/*").permitAll()
                         .requestMatchers("/api/v1/events/organizer/*").permitAll()
+                        .requestMatchers("/api/v1/promotions").permitAll()
+                        .requestMatchers("/api/v1/promotions/*").permitAll()
                         .requestMatchers("/api/v1/organizer/*").permitAll()
                         .requestMatchers("/api/v1/tickets/customer/*").permitAll()
                         .requestMatchers("/api/v1/tickets/*").permitAll()
+                        .requestMatchers("/api/v1/transactions").permitAll()
+                        .requestMatchers("/api/v1/transactions/*").permitAll()
                         .requestMatchers("/api/v1/transactions/customer/*").permitAll()
-                        .requestMatchers("/api/v1/auth/logout/").permitAll()
+                        .requestMatchers("/api/v1/reviews").permitAll()
+                        .requestMatchers("/api/v1/reviews/event/*").permitAll()
                         .anyRequest().authenticated())
 //                        .anyRequest().permitAll())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -112,4 +118,5 @@ public class SecurityConfig {
 //        return new NimbusJwtEncoder(jwks);
 //    }
 }
+
 
