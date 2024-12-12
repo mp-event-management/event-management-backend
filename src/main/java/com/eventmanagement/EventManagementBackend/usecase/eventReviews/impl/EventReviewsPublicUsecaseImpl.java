@@ -31,11 +31,11 @@ public class EventReviewsPublicUsecaseImpl implements EventReviewsPublicUsecase 
     private final EventsRepository eventsRepository;
     private final TicketsRepository ticketsRepository;
 
-    public EventReviewsPublicUsecaseImpl(EventReviewsRepository eventReviewsRepository, UsersAccountRepository usersAccountRepository, EventsRepository eventsRepository, TicketsRepository ticketsRepository, TicketsRepository ticketsRepository1) {
+    public EventReviewsPublicUsecaseImpl(EventReviewsRepository eventReviewsRepository, UsersAccountRepository usersAccountRepository, EventsRepository eventsRepository, TicketsRepository ticketsRepository) {
         this.eventReviewsRepository = eventReviewsRepository;
         this.usersAccountRepository = usersAccountRepository;
         this.eventsRepository = eventsRepository;
-        this.ticketsRepository = ticketsRepository1;
+        this.ticketsRepository = ticketsRepository;
     }
 
     @Override
@@ -78,6 +78,7 @@ public class EventReviewsPublicUsecaseImpl implements EventReviewsPublicUsecase 
                 eventReview.getEventReviewId(),
                 eventReview.getEvent().getEventId(),
                 eventReview.getUser().getUserId(),
+                eventReview.getUser().getName(),
                 eventReview.getRating(),
                 eventReview.getReviewText()
         );
@@ -100,6 +101,7 @@ public class EventReviewsPublicUsecaseImpl implements EventReviewsPublicUsecase 
                         review.getEventReviewId(),
                         review.getEvent().getEventId(),
                         review.getUser().getUserId(),
+                        review.getUser().getName(),
                         review.getRating(),
                         review.getReviewText()
                 ))

@@ -14,6 +14,7 @@ public class EventReviewsResponseDTO {
     private Integer eventReviewId;
     private Integer eventId;
     private Integer customerId;
+    private String customerName;
     private BigDecimal rating;
     private String reviewText;
 
