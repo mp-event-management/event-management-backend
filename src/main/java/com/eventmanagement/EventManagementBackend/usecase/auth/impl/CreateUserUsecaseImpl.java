@@ -1,9 +1,11 @@
 package com.eventmanagement.EventManagementBackend.usecase.auth.impl;
 
+import com.eventmanagement.EventManagementBackend.entity.ReferralCode;
 import com.eventmanagement.EventManagementBackend.entity.Role;
 import com.eventmanagement.EventManagementBackend.entity.UsersAccount;
 import com.eventmanagement.EventManagementBackend.infrastructure.auth.DTO.UserRegistrationDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.auth.repository.RoleRepository;
+import com.eventmanagement.EventManagementBackend.infrastructure.referralCode.ReferralCodeRepository;
 import com.eventmanagement.EventManagementBackend.infrastructure.users.dto.UserDetailResponseDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.users.repository.UsersAccountRepository;
 import com.eventmanagement.EventManagementBackend.usecase.auth.CreateUserUsecase;
@@ -16,19 +18,25 @@ public class CreateUserUsecaseImpl implements CreateUserUsecase {
     private final UsersAccountRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final ReferralCodeRepository referralCodeRepository;
 
-    public CreateUserUsecaseImpl(UsersAccountRepository usersRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+    public CreateUserUsecaseImpl(UsersAccountRepository usersRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, ReferralCodeRepository referralCodeRepository) {
         this.usersRepository = usersRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
+        this.referralCodeRepository = referralCodeRepository;
     }
 
     @Override
     @CachePut(value = "userDetailResponseDTO", key = "#result.id")
     public UserDetailResponseDTO createUser(UserRegistrationDTO req) {
-
+        ReferralCode code;
         Role role = roleRepository.findByName(req.getRole())
                 .orElseThrow(() -> new RuntimeException("Role not found"));
+
+        if (req.getReferral_code() != null){
+            code = referralCodeRepository.
+        }
 
         UsersAccount newUser = new UsersAccount();
         newUser.setName(req.getName());
