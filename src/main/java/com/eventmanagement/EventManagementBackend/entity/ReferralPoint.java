@@ -52,6 +52,12 @@ public class ReferralPoint {
             this.createdAt = OffsetDateTime.now();
         }
         this.updatedAt = OffsetDateTime.now();
+        if (points == null) {
+            points = 10000;
+        }
+        if (expiryDate == null) {
+            expiryDate = OffsetDateTime.now().plusDays(90);
+        }
     }
 
     @PreUpdate
