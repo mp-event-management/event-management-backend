@@ -1,15 +1,19 @@
 package com.eventmanagement.EventManagementBackend.usecase.auth.impl;
 
 import com.eventmanagement.EventManagementBackend.entity.ReferralCode;
+import com.eventmanagement.EventManagementBackend.entity.ReferralPoint;
 import com.eventmanagement.EventManagementBackend.entity.Role;
 import com.eventmanagement.EventManagementBackend.entity.UsersAccount;
 import com.eventmanagement.EventManagementBackend.infrastructure.auth.DTO.UserRegistrationDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.auth.repository.RoleRepository;
 import com.eventmanagement.EventManagementBackend.infrastructure.referralCode.ReferralCodeRepository;
+import com.eventmanagement.EventManagementBackend.infrastructure.referralPoints.repository.ReferralPointsRepository;
 import com.eventmanagement.EventManagementBackend.infrastructure.users.dto.UserDetailResponseDTO;
 import com.eventmanagement.EventManagementBackend.infrastructure.users.repository.UsersAccountRepository;
 import com.eventmanagement.EventManagementBackend.usecase.auth.CreateUserUsecase;
+import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.CachePut;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,36 +23,45 @@ public class CreateUserUsecaseImpl implements CreateUserUsecase {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final ReferralCodeRepository referralCodeRepository;
+    private final ReferralPointsRepository referralPointsRepository;
 
-    public CreateUserUsecaseImpl(UsersAccountRepository usersRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, ReferralCodeRepository referralCodeRepository) {
+    public CreateUserUsecaseImpl(UsersAccountRepository usersRepository, PasswordEncoder passwordEncoder,
+                                 RoleRepository roleRepository, ReferralCodeRepository referralCodeRepository,
+                                 ReferralPointsRepository referralPointsRepository) {
         this.usersRepository = usersRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
         this.referralCodeRepository = referralCodeRepository;
+        this.referralPointsRepository = referralPointsRepository;
     }
 
     @Override
     @CachePut(value = "userDetailResponseDTO", key = "#result.id")
+    @Transactional
     public UserDetailResponseDTO createUser(UserRegistrationDTO req) {
-        ReferralCode code;
+
         Role role = roleRepository.findByName(req.getRole())
                 .orElseThrow(() -> new RuntimeException("Role not found"));
 
-        if (req.getReferral_code() != null){
-            code = referralCodeRepository.
-        }
+            if (referralCodeRepository.existsByReferralCodeId(req.getReferral_code())) {
+                referralCodeRepository.incrementUsage(req.getReferral_code()); // working
+                UsersAccount referrer = usersRepository.findByReferralCode(req.getReferral_code())
+                        .orElseThrow(() -> new RuntimeException("User not found"));
+                ReferralPoint newPoint = new ReferralPoint();
+                newPoint.setUser(referrer);
+                referralPointsRepository.save(newPoint);
+            }
+
 
         UsersAccount newUser = new UsersAccount();
         newUser.setName(req.getName());
         newUser.setEmail(req.getEmail());
         newUser.setPassword(req.getPassword());
         newUser.setRole(role);
-//            newUser.setReferralCode("asdfasdf"); //hardcoded, logic not yet implemented !
-        if (req.getReferral_code() != null) { //to be implemented to find existing user's code from existing user in db
-            newUser.setIsFirstTimeDiscount(true); //hardcoded, logic not yet implemented
-        }
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-
+        newUser.setUsedReferralCode(req.getReferral_code());
+        newUser.setReferralCode("hardcoded");
+        //to do => generating a 8 char referral code
         var savedUser = usersRepository.save(newUser);
         return new UserDetailResponseDTO(savedUser.getUserId(), savedUser.getEmail());
 
