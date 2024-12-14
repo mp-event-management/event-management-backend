@@ -13,7 +13,7 @@ public class CorsConfigurationSourceImpl implements CorsConfigurationSource {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type", "Application"));
         corsConfiguration.setAllowedOriginPatterns(List.of("http://localhost:3001", "http://localhost:3000",
-                "http://0.0.0.0:3000", "http://host.docker.internal:3000"));
+                "http://0.0.0.0:3000", "http://host.docker.internal:3000", "https://eventbro-mdedealfs-projects.vercel.app", "https://*.vercel.app"));
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setExposedHeaders(List.of("Authorization", "Access-Control-Origin", "Access-Control-Allow-Credentials"));
