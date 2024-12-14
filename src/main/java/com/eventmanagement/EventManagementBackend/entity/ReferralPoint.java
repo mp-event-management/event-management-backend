@@ -23,7 +23,7 @@ public class ReferralPoint {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
-    private UsersAccount user; //owner of the code, determined at new registration
+    private UsersAccount user;
 
     @NotNull
     @ColumnDefault("10000")
@@ -52,12 +52,6 @@ public class ReferralPoint {
             this.createdAt = OffsetDateTime.now();
         }
         this.updatedAt = OffsetDateTime.now();
-        if (points == null) {
-            points = 10000;
-        }
-        if (expiryDate == null) {
-            expiryDate = OffsetDateTime.now().plusDays(90);
-        }
     }
 
     @PreUpdate

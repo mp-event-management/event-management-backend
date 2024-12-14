@@ -112,7 +112,7 @@ public class UsersAccount {
             this.createdAt = OffsetDateTime.now();
         }
         this.updatedAt = OffsetDateTime.now();
-        this.referralCode = UUID.randomUUID().toString(); //placeholder
+        this.referralCode = UUID.randomUUID().toString();
     }
 
     @PreUpdate
