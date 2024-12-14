@@ -60,9 +60,14 @@ public class CreateUserUsecaseImpl implements CreateUserUsecase {
         newUser.setRole(role);
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         newUser.setUsedReferralCode(req.getReferral_code());
-        newUser.setReferralCode("hardcoded");
-        //to do => generating a 8 char referral code
+//        newUser.setReferralCode("placeholder");
+        ReferralCode code = new ReferralCode(); //create new java object of code for new user
+        //1. handle user first to avoid transient entity error
         var savedUser = usersRepository.save(newUser);
+        code.setUser(newUser);
+        code = referralCodeRepository.save(code); //2. safe to save java object of code for new user to DB
+        newUser.setReferralCode(code.getReferralCodeId());
+        savedUser = usersRepository.save(savedUser);
         return new UserDetailResponseDTO(savedUser.getUserId(), savedUser.getEmail());
 
 
