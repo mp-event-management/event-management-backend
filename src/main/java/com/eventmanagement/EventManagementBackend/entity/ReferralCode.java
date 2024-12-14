@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -15,9 +16,18 @@ import java.util.Set;
 @Entity
 @Table(name = "referral_codes")
 public class ReferralCode {
+//    @Id
+//    @SequenceGenerator(name = "referral_codes_id_gen", sequenceName = "promotions_promotion_id_seq", allocationSize = 1)
+//    @Column(name = "referral_code", nullable = false, length = Integer.MAX_VALUE)
+//    private String referralCodeId;
+
     @Id
-    @SequenceGenerator(name = "referral_codes_id_gen", sequenceName = "promotions_promotion_id_seq", allocationSize = 1)
-    @Column(name = "referral_code", nullable = false, length = Integer.MAX_VALUE)
+    @GeneratedValue(generator = "codeGenerator")
+    @GenericGenerator(
+            name = "codeGenerator",
+            strategy = "com.eventmanagement.EventManagementBackend.infrastructure.referralCode.CodeGeneratorUseCase"
+    )
+    @Column(name = "referral_code", nullable = false, length = 8)
     private String referralCodeId;
 
     @NotNull
@@ -49,6 +59,10 @@ public class ReferralCode {
             this.createdAt = OffsetDateTime.now();
         }
         this.updatedAt = OffsetDateTime.now();
+        if (totalUsage == null) {
+            totalUsage = 0;
+        }
+
     }
 
     @PreUpdate
